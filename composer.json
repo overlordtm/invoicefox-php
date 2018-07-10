@@ -1,0 +1,28 @@
+{
+    "name": "rtfm/invoicefox-php",
+    "type": "library",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Andraz Vrhovec",
+            "email": "andraz@rtfm.si"
+        }
+    ],
+    "minimum-stability": "alpha",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "RTFM\\InvoiceFoxAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RTFM\\InvoiceFoxAPI\\": "tests/"
+        }
+    }
+}
