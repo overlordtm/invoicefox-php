@@ -63,6 +63,27 @@ final class InvoiceFoxAPITest extends TestCase
 
         $this->expectException(NotFoundException::class);
         $this->api->partnerGet($partnerId);
+    }
+
+    public function testTransferCreate() {
+        $transfer = new InvoiceFoxAPI\Model\Transfer();
+
+
+        $transfer->setDateCreated("11.7.2018");
+        $transfer->setDocnum("TEST DOCUMENT");
+        $transfer->setDoctype(InvoiceFoxAPI\Model\Transfer::DOCTYPE_IN);
+        $transfer->setDocsubtype(InvoiceFoxAPI\Model\Transfer::SUBTYPE_INITIAL_STATE);
+
+        $transfer_id = $this->api->transferCreate($transfer);
+
+        $this->assertInternalType("int", $transfer_id);
+
+//        $item = new InvoiceFoxAPI\Model\Item();
+//        $item->setCode("Test item");
+//        $item->setPrice(666.6);
+//        $item->setTax(0);
+//
+//        $titem = new InvoiceFoxAPI\Model\TransferItem();
 
     }
 

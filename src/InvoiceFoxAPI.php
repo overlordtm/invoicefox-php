@@ -56,35 +56,65 @@ class InvoiceFoxAPI
      * @throws Exception\APIException
      * @throws Exception\NotFoundException
      */
-    private function handleResponse($callback, $resp)
+    private function handleResponse($callback, $resp, $single = true, $allowEmpty = false)
     {
         /* @var $resp GuzzleHttp\Psr7\Response */
 
         if ($resp->getStatusCode() == 200) {
+
+            /*
+             * response is usually in form of
+             *
+             * [
+             *      [
+             *          {
+             *              ...
+             *          },
+             *          {
+             *              ...
+             *          }, ...
+             *      ]
+             * ]
+             */
             $data = json_decode($resp->getBody()->getContents());
 
 //            echo "Handler response" . var_export($data[0]);
 
-            if (is_array($data[0]) && sizeof($data[0]) == 0) {
-                throw new Exception\NotFoundException();
+            if (!is_array($data[0])) {
+                throw new Exception\APIException("Unknown response format");
             }
 
-            if (is_array($data[0]) && sizeof($data[0]) > 1) {
-                return array_map($callback, $data[0]);
-            }
-
-            if (is_array($data[0]) && sizeof($data[0]) == 1) {
-
-                // might be full object or just id
-                if (count(get_object_vars($data[0][0])) == 1 && property_exists($data[0][0], "id")) {
-                    return $data[0][0]->id;
+            if (sizeof($data[0]) == 0) {
+                if ($allowEmpty) {
+                    return array();
                 } else {
-                    return call_user_func($callback, $data[0][0]);
+                    throw new Exception\NotFoundException();
                 }
+            }
+
+            if ($single) {
+
+//                // might be full object or just id
+//                if (count(get_object_vars($data[0][0])) == 1 && property_exists($data[0][0], "id")) {
+//                    return $data[0][0]->id;
+//                } else {
+                return call_user_func($callback, $data[0][0]);
+//                }
+            } else {
+                return array_map($callback, $data[0]);
             }
         }
 
         throw new Exception\APIException("Invalid return status");
+    }
+
+    private static function id_extractor($data): int
+    {
+        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
+            return intval($data->id);
+        } else {
+            throw new Exception\APIException("Unknown response format");
+        }
     }
 
     /**
@@ -98,7 +128,7 @@ class InvoiceFoxAPI
     {
         $resp = $this->execute('partner', 'select-all');
 
-        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
+        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp, false, true);
     }
 
     /**
@@ -113,7 +143,7 @@ class InvoiceFoxAPI
     {
         $resp = $this->execute('partner', 'select-one', ["id" => $id]);
 
-        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
+        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp, true);
     }
 
     /**
@@ -128,7 +158,7 @@ class InvoiceFoxAPI
     {
         $resp = $this->execute('partner', 'assure', $data->toArray());
 
-        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true);
     }
 
     /**
@@ -138,17 +168,13 @@ class InvoiceFoxAPI
      */
     public function partnerUpdate(Model\Partner $partner): Model\Partner
     {
-        if(!is_int($partner->getId())) {
+        if (!is_int($partner->getId())) {
             throw new Exception\APIException("ID is not set on the Partner");
         }
 
         $resp = $this->execute('partner', 'update', $partner->toArray(), 'select-one');
 
-        if ($resp->getStatusCode() == 200) {
-            return json_decode($resp->getBody()->getContents());
-        }
-
-        throw new APIException("Invalid return status");
+        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp, true);
     }
 
     public function partnerDelete(int $id): bool
@@ -180,26 +206,43 @@ class InvoiceFoxAPI
         return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
     }
 
+    public function itemFind(string $search): array
+    {
+        $resp = $this->execute('item', 'search', ["value" => $search]);
+
+        return $this->handleResponse(array(Model\Item::class, 'from'), $resp, false, true);
+    }
+
+    public function itemGetByCode(string $code): Model\Item
+    {
+        $items = $this->itemFind($code);
+
+        foreach ($items as $item) {
+            /* @var $item \RTFM\InvoiceFoxAPI\Model\Item */
+            if ($item->getCode() == $code) {
+                return $item;
+            }
+        }
+
+        throw new Exception\NotFoundException();
+    }
+
     public function itemCreate(Model\Item $item): int
     {
         $resp = $this->execute('item', 'insert-into', $item->toArray());
 
-        return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
     }
 
     public function itemUpdate(Model\Item $item): Model\Item
     {
-        if(!is_int($item->getId())) {
+        if (!is_int($item->getId())) {
             throw new Exception\APIException("ID is not set on the Item");
         }
 
         $resp = $this->execute('item', 'update', $item->toArray(), 'select-one');
 
-        if ($resp->getStatusCode() == 200) {
-            return json_decode($resp->getBody()->getContents());
-        }
-
-        throw new APIException("Invalid return status");
+        return $this->handleResponse(array(Model\Item::class, 'from'), $resp, true, false);
     }
 
     public function itemDelete(int $id): bool
@@ -218,6 +261,36 @@ class InvoiceFoxAPI
         throw new APIException("Invalid return status");
     }
 
+    public function transferList(Model\Transfer $transfer): int
+    {
+        $resp = $this->execute('transfer', 'select-all', $transfer->toArray());
+        return $this->handleResponse(array(Model\Transfer::class, 'from'), $resp, false, true);
+    }
+
+    public function transferCreate(Model\Transfer $transfer): int
+    {
+        $resp = $this->execute('transfer', 'insert-into', $transfer->toArray());
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
+    }
+
+    public function transferUpdate(Model\Transfer $transfer): Model\Transfer
+    {
+        if (!is_int($transfer->getId())) {
+            throw new Exception\APIException("ID is not set on the Transfer");
+        }
+
+        $resp = $this->execute('transfer', 'update', $transfer->toArray(), 'select-one');
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
+    }
+
+    public function transferAddItem(int $transfer_id, Model\TransferItem $item): array
+    {
+        $item->setIdTransfer($transfer_id);
+
+        $resp = $this->execute('transfer-b', 'insert-into', $item->toArray(), 'select-of');
+        return $this->handleResponse(array(Model\TransferItem::class, 'from'), $resp, false, false);
+    }
+
     public function invoiceCreate()
     {
 
@@ -234,7 +307,7 @@ class InvoiceFoxAPI
 
         $url = "API?_r=$resource&_m=$method";
 
-        if(!empty($method2)) {
+        if (!empty($method2)) {
             $url = $url . "&_m2=" . $method2;
         }
 

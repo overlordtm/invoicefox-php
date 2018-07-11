@@ -92,7 +92,9 @@ class Invoice implements ArrayModel
         $obj = new self();
 
         foreach ($data as $key => $value) {
-            $obj->{$key} = $value;
+            if (property_exists($obj, $key)) {
+                $obj->{$key} = $value;
+            }
         }
 
         return $obj;
