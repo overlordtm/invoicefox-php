@@ -49,6 +49,13 @@ class InvoiceFoxAPI
         return new self($client);
     }
 
+    /**
+     * @param $callback
+     * @param $resp
+     * @return array|mixed|int
+     * @throws Exception\APIException
+     * @throws Exception\NotFoundException
+     */
     private function handleResponse($callback, $resp)
     {
         /* @var $resp GuzzleHttp\Psr7\Response */
@@ -80,13 +87,28 @@ class InvoiceFoxAPI
         throw new Exception\APIException("Invalid return status");
     }
 
-    public function partnerList()
+    /**
+     * List all partners
+     *
+     * @return array
+     * @throws Exception\APIException
+     * @throws Exception\NotFoundException
+     */
+    public function partnerList(): array
     {
         $resp = $this->execute('partner', 'select-all');
 
         return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
     }
 
+    /**
+     * Get partner by id
+     *
+     * @param int $id
+     * @return Model\Partner
+     * @throws Exception\APIException
+     * @throws Exception\NotFoundException
+     */
     public function partnerGet(int $id): Model\Partner
     {
         $resp = $this->execute('partner', 'select-one', ["id" => $id]);
@@ -95,22 +117,32 @@ class InvoiceFoxAPI
     }
 
     /**
+     * Create (assure) new partner. If all parameters matches with existing partner, existing partner is retuned,
+     * otherwise new partner is created.
+     *
      * @param Model\Partner $data
      * @return int
      * @throws APIException
      */
-    public function partnerCreate(Model\Partner $data)
+    public function partnerCreate(Model\Partner $data): int
     {
         $resp = $this->execute('partner', 'assure', $data->toArray());
 
         return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
     }
 
-    public function partnerUpdate(int $id, array $data)
+    /**
+     * @param Model\Partner $partner
+     * @return Model\Partner
+     * @throws Exception\APIException
+     */
+    public function partnerUpdate(Model\Partner $partner): Model\Partner
     {
-        $data["id"] = $id;
+        if(!is_int($partner->getId())) {
+            throw new Exception\APIException("ID is not set on the Partner");
+        }
 
-        $resp = $this->execute('partner', 'update', $data);
+        $resp = $this->execute('partner', 'update', $partner->toArray(), 'select-one');
 
         if ($resp->getStatusCode() == 200) {
             return json_decode($resp->getBody()->getContents());
@@ -134,10 +166,6 @@ class InvoiceFoxAPI
         return false;
     }
 
-    /**
-     * @return array
-     * @throws APIException
-     */
     public function itemList(): array
     {
         $resp = $this->execute('item', 'select-all');
@@ -145,16 +173,27 @@ class InvoiceFoxAPI
         return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
     }
 
-    public function itemCreate(Model\Item $item)
+    public function itemGet(int $id): Model\Item
+    {
+        $resp = $this->execute('item', 'select-one', ["id" => $id]);
+
+        return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
+    }
+
+    public function itemCreate(Model\Item $item): int
     {
         $resp = $this->execute('item', 'insert-into', $item->toArray());
 
         return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
     }
 
-    public function itemUpdate(int $id, array $data)
+    public function itemUpdate(Model\Item $item): Model\Item
     {
-        $resp = $this->execute('item', 'update', $data);
+        if(!is_int($item->getId())) {
+            throw new Exception\APIException("ID is not set on the Item");
+        }
+
+        $resp = $this->execute('item', 'update', $item->toArray(), 'select-one');
 
         if ($resp->getStatusCode() == 200) {
             return json_decode($resp->getBody()->getContents());
@@ -163,7 +202,7 @@ class InvoiceFoxAPI
         throw new APIException("Invalid return status");
     }
 
-    public function itemDelete(int $id)
+    public function itemDelete(int $id): bool
     {
         $resp = $this->execute('item', 'delete', ['id' => $id]);
 
@@ -179,7 +218,7 @@ class InvoiceFoxAPI
         throw new APIException("Invalid return status");
     }
 
-    public function createInvoice()
+    public function invoiceCreate()
     {
 
     }
@@ -190,10 +229,14 @@ class InvoiceFoxAPI
     }
 
 
-    public function execute(string $resource, string $method, $data = []): GuzzleHttp\Psr7\Response
+    public function execute(string $resource, string $method, $data = [], string $method2 = NULL): GuzzleHttp\Psr7\Response
     {
 
         $url = "API?_r=$resource&_m=$method";
+
+        if(!empty($method2)) {
+            $url = $url . "&_m2=" . $method2;
+        }
 
         $options = [
             'form_params' => $data
