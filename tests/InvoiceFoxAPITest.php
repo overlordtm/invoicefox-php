@@ -15,10 +15,9 @@ final class InvoiceFoxAPITest extends TestCase
     public function testListPartners(): void
     {
         $api = InvoiceFoxAPI\InvoiceFoxAPI::newInstance();
+        $partners = $api->partnerList();
 
-        $partners = $api->listPartners();
 
-        print_r($partners);
 
         $this->assertEmpty($partners);
 
