@@ -15,45 +15,6 @@ namespace RTFM\InvoiceFoxAPI\Model;
 class Invoice implements ArrayModel
 {
 
-    /*
-     *
-     		{
-			"id": 9,
-			"title": "",
-			"date_sent": "2018-07-05",
-			"date_to_pay": "2018-07-05",
-			"date_served": "2018-07-05",
-			"id_partner": 14,
-			"vat_level": 0.0,
-			"date_payed": 0,
-			"disabled": 0,
-			"pub_notes": "some notes",
-			"id_preinvoice": 0,
-			"tags": "",
-			"reverse_vat": 0,
-			"pub_notes2": "",
-			"payment": "",
-			"payment_act": 0,
-			"date_served0": "",
-			"doctype": 0,
-			"id_setup": 0,
-			"id_currency": 0,
-			"conv_rate": 0.0,
-			"reference_document": "",
-			"reference_date": "",
-			"docnum": 0,
-			"fiscal": null,
-			"id_sales_location": null,
-			"id_operator": null,
-			"version": 1,
-			"to_fiscalize": null,
-			"fiscalized": null,
-			"id_invoice_sent_cn": null,
-			"id_project": null
-		},
-     */
-
-
     private $id;
     private $title;
     private $date_sent;
@@ -115,10 +76,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id
+     * @return Invoice
      */
-    public function setId($id): void
+    public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -131,10 +94,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $title
+     * @return Invoice
      */
-    public function setTitle($title): void
+    public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -147,10 +112,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $date_sent
+     * @return Invoice
      */
-    public function setDateSent($date_sent): void
+    public function setDateSent($date_sent)
     {
         $this->date_sent = $date_sent;
+        return $this;
     }
 
     /**
@@ -163,10 +130,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $date_to_pay
+     * @return Invoice
      */
-    public function setDateToPay($date_to_pay): void
+    public function setDateToPay($date_to_pay)
     {
         $this->date_to_pay = $date_to_pay;
+        return $this;
     }
 
     /**
@@ -179,10 +148,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $date_served
+     * @return Invoice
      */
-    public function setDateServed($date_served): void
+    public function setDateServed($date_served)
     {
         $this->date_served = $date_served;
+        return $this;
     }
 
     /**
@@ -195,10 +166,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_partner
+     * @return Invoice
      */
-    public function setIdPartner($id_partner): void
+    public function setIdPartner($id_partner)
     {
         $this->id_partner = $id_partner;
+        return $this;
     }
 
     /**
@@ -211,10 +184,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $vat_level
+     * @return Invoice
      */
-    public function setVatLevel($vat_level): void
+    public function setVatLevel($vat_level)
     {
         $this->vat_level = $vat_level;
+        return $this;
     }
 
     /**
@@ -227,10 +202,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $date_payed
+     * @return Invoice
      */
-    public function setDatePayed($date_payed): void
+    public function setDatePayed($date_payed)
     {
         $this->date_payed = $date_payed;
+        return $this;
     }
 
     /**
@@ -243,10 +220,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $disabled
+     * @return Invoice
      */
-    public function setDisabled($disabled): void
+    public function setDisabled($disabled)
     {
         $this->disabled = $disabled;
+        return $this;
     }
 
     /**
@@ -259,10 +238,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $pub_notes
+     * @return Invoice
      */
-    public function setPubNotes($pub_notes): void
+    public function setPubNotes($pub_notes)
     {
         $this->pub_notes = $pub_notes;
+        return $this;
     }
 
     /**
@@ -275,10 +256,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_preinvoice
+     * @return Invoice
      */
-    public function setIdPreinvoice($id_preinvoice): void
+    public function setIdPreinvoice($id_preinvoice)
     {
         $this->id_preinvoice = $id_preinvoice;
+        return $this;
     }
 
     /**
@@ -291,10 +274,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $tags
+     * @return Invoice
      */
-    public function setTags($tags): void
+    public function setTags($tags)
     {
         $this->tags = $tags;
+        return $this;
     }
 
     /**
@@ -307,10 +292,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $reverse_vat
+     * @return Invoice
      */
-    public function setReverseVat($reverse_vat): void
+    public function setReverseVat($reverse_vat)
     {
         $this->reverse_vat = $reverse_vat;
+        return $this;
     }
 
     /**
@@ -323,10 +310,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $pub_notes2
+     * @return Invoice
      */
-    public function setPubNotes2($pub_notes2): void
+    public function setPubNotes2($pub_notes2)
     {
         $this->pub_notes2 = $pub_notes2;
+        return $this;
     }
 
     /**
@@ -339,10 +328,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $payment
+     * @return Invoice
      */
-    public function setPayment($payment): void
+    public function setPayment($payment)
     {
         $this->payment = $payment;
+        return $this;
     }
 
     /**
@@ -355,10 +346,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $payment_act
+     * @return Invoice
      */
-    public function setPaymentAct($payment_act): void
+    public function setPaymentAct($payment_act)
     {
         $this->payment_act = $payment_act;
+        return $this;
     }
 
     /**
@@ -371,10 +364,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $date_served0
+     * @return Invoice
      */
-    public function setDateServed0($date_served0): void
+    public function setDateServed0($date_served0)
     {
         $this->date_served0 = $date_served0;
+        return $this;
     }
 
     /**
@@ -387,10 +382,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $doctype
+     * @return Invoice
      */
-    public function setDoctype($doctype): void
+    public function setDoctype($doctype)
     {
         $this->doctype = $doctype;
+        return $this;
     }
 
     /**
@@ -403,10 +400,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_setup
+     * @return Invoice
      */
-    public function setIdSetup($id_setup): void
+    public function setIdSetup($id_setup)
     {
         $this->id_setup = $id_setup;
+        return $this;
     }
 
     /**
@@ -419,10 +418,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_currency
+     * @return Invoice
      */
-    public function setIdCurrency($id_currency): void
+    public function setIdCurrency($id_currency)
     {
         $this->id_currency = $id_currency;
+        return $this;
     }
 
     /**
@@ -435,10 +436,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $conv_rate
+     * @return Invoice
      */
-    public function setConvRate($conv_rate): void
+    public function setConvRate($conv_rate)
     {
         $this->conv_rate = $conv_rate;
+        return $this;
     }
 
     /**
@@ -451,10 +454,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $reference_document
+     * @return Invoice
      */
-    public function setReferenceDocument($reference_document): void
+    public function setReferenceDocument($reference_document)
     {
         $this->reference_document = $reference_document;
+        return $this;
     }
 
     /**
@@ -467,10 +472,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $reference_date
+     * @return Invoice
      */
-    public function setReferenceDate($reference_date): void
+    public function setReferenceDate($reference_date)
     {
         $this->reference_date = $reference_date;
+        return $this;
     }
 
     /**
@@ -483,10 +490,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $docnum
+     * @return Invoice
      */
-    public function setDocnum($docnum): void
+    public function setDocnum($docnum)
     {
         $this->docnum = $docnum;
+        return $this;
     }
 
     /**
@@ -499,10 +508,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $fiscal
+     * @return Invoice
      */
-    public function setFiscal($fiscal): void
+    public function setFiscal($fiscal)
     {
         $this->fiscal = $fiscal;
+        return $this;
     }
 
     /**
@@ -515,10 +526,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_sales_location
+     * @return Invoice
      */
-    public function setIdSalesLocation($id_sales_location): void
+    public function setIdSalesLocation($id_sales_location)
     {
         $this->id_sales_location = $id_sales_location;
+        return $this;
     }
 
     /**
@@ -531,10 +544,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_operator
+     * @return Invoice
      */
-    public function setIdOperator($id_operator): void
+    public function setIdOperator($id_operator)
     {
         $this->id_operator = $id_operator;
+        return $this;
     }
 
     /**
@@ -547,10 +562,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $version
+     * @return Invoice
      */
-    public function setVersion($version): void
+    public function setVersion($version)
     {
         $this->version = $version;
+        return $this;
     }
 
     /**
@@ -563,10 +580,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $to_fiscalize
+     * @return Invoice
      */
-    public function setToFiscalize($to_fiscalize): void
+    public function setToFiscalize($to_fiscalize)
     {
         $this->to_fiscalize = $to_fiscalize;
+        return $this;
     }
 
     /**
@@ -579,10 +598,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $fiscalized
+     * @return Invoice
      */
-    public function setFiscalized($fiscalized): void
+    public function setFiscalized($fiscalized)
     {
         $this->fiscalized = $fiscalized;
+        return $this;
     }
 
     /**
@@ -595,10 +616,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_invoice_sent_cn
+     * @return Invoice
      */
-    public function setIdInvoiceSentCn($id_invoice_sent_cn): void
+    public function setIdInvoiceSentCn($id_invoice_sent_cn)
     {
         $this->id_invoice_sent_cn = $id_invoice_sent_cn;
+        return $this;
     }
 
     /**
@@ -611,10 +634,12 @@ class Invoice implements ArrayModel
 
     /**
      * @param mixed $id_project
+     * @return Invoice
      */
-    public function setIdProject($id_project): void
+    public function setIdProject($id_project)
     {
         $this->id_project = $id_project;
+        return $this;
     }
 
 
