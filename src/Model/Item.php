@@ -61,7 +61,7 @@ class Item implements ArrayModel
     private $weight;
 
 
-    public static function from(object $data)
+    public static function from($data)
     {
         $obj = new self();
 

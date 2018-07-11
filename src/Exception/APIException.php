@@ -6,7 +6,7 @@
  * Time: 21:52
  */
 
-namespace RTFM\InvoiceFoxAPI;
+namespace RTFM\InvoiceFoxAPI\Exception;
 
 
 class APIException extends \Exception

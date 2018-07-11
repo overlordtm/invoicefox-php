@@ -44,7 +44,7 @@ class Partner implements ArrayModel
     /**
      * @var int
      */
-    private $id;
+    private $id = NULL;
 
     /**
      * @var string
@@ -54,99 +54,104 @@ class Partner implements ArrayModel
     /**
      * @var string
      */
-    private $street;
+    private $street = "";
 
     /**
      * @var string
      */
-    private $street2;
+    private $street2 = "";
 
     /**
      * @var string
      */
-    private $postal;
+    private $postal = "";
 
     /**
      * @var string
      */
-    private $city;
+    private $city = "";
 
     /**
      * @var string
      */
-    private $country;
+    private $country = "";
 
     /**
      * @var string
      */
-    private $vatid;
+    private $vatid = "";
 
     /**
      * @var string
      */
-    private $phone;
+    private $phone = "";
 
     /**
      * @var string
      */
-    private $website;
+    private $website = "";
 
     /**
      * @var string
      */
-    private $email;
+    private $email = "";
 
     /**
      * @var string
      */
-    private $notes;
+    private $notes = "";
 
     /**
      * @var bool
      */
-    private $vatbound;
+    private $vatbound = false;
 
     /**
      * @var string
      */
-    private $custaddr;
+    private $custaddr = "";
 
     /**
      * @var int
      */
-    private $payment_period;
+    private $payment_period = 0;
 
     /**
      * @var int
      */
-    private $parent;
+    private $parent = 0;
 
     /**
      * @var string
      */
-    private $bankacc;
+    private $bankacc = "";
 
     /**
      * @var string
      */
-    private $bic_bei;
+    private $bic_bei = "";
 
     /**
      * @var string
      */
-    private $internal_id;
+    private $internal_id = "";
 
     /**
      * @var string
      */
-    private $reg_num;
+    private $reg_num = "";
 
     /**
      * @var int
      */
-    private $flags;
+    private $flags = 0;
 
-    public static function from(object $data)
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
+    public static function from($data)
     {
         $obj = new self();
 
@@ -536,8 +541,5 @@ class Partner implements ArrayModel
     }
 
 
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
+
 }

@@ -79,5 +79,7 @@ modules.xml
 .idea/misc.xml
 *.ipr
 
+build/
+
 
 # End of https://www.gitignore.io/api/git,composer,phpstorm+all

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace RTFM\InvoiceFoxAPI;
 
 use GuzzleHttp;
+use RTFM\InvoiceFoxAPI\Exception;
 use RTFM\InvoiceFoxAPI\Model;
 
 class InvoiceFoxAPI
@@ -50,15 +51,33 @@ class InvoiceFoxAPI
 
     private function handleResponse($callback, $resp)
     {
+        /* @var $resp GuzzleHttp\Psr7\Response */
+
         if ($resp->getStatusCode() == 200) {
             $data = json_decode($resp->getBody()->getContents());
 
-            if (is_array($data[0])) {
+//            echo "Handler response" . var_export($data[0]);
+
+            if (is_array($data[0]) && sizeof($data[0]) == 0) {
+                throw new Exception\NotFoundException();
+            }
+
+            if (is_array($data[0]) && sizeof($data[0]) > 1) {
                 return array_map($callback, $data[0]);
+            }
+
+            if (is_array($data[0]) && sizeof($data[0]) == 1) {
+
+                // might be full object or just id
+                if (count(get_object_vars($data[0][0])) == 1 && property_exists($data[0][0], "id")) {
+                    return $data[0][0]->id;
+                } else {
+                    return call_user_func($callback, $data[0][0]);
+                }
             }
         }
 
-        throw new APIException("Invalid return status");
+        throw new Exception\APIException("Invalid return status");
     }
 
     public function partnerList()
@@ -68,20 +87,30 @@ class InvoiceFoxAPI
         return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
     }
 
-    public function partnerCreate(array $data)
+    public function partnerGet(int $id): Model\Partner
     {
-        $resp = $this->execute('partner', 'assure');
+        $resp = $this->execute('partner', 'select-one', ["id" => $id]);
 
-        if ($resp->getStatusCode() == 200) {
-            return json_decode($resp->getBody()->getContents());
-        }
+        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
+    }
 
-        throw new APIException("Invalid return status");
+    /**
+     * @param Model\Partner $data
+     * @return int
+     * @throws APIException
+     */
+    public function partnerCreate(Model\Partner $data)
+    {
+        $resp = $this->execute('partner', 'assure', $data->toArray());
+
+        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp);
     }
 
     public function partnerUpdate(int $id, array $data)
     {
-        $resp = $this->execute('partner', 'update');
+        $data["id"] = $id;
+
+        $resp = $this->execute('partner', 'update', $data);
 
         if ($resp->getStatusCode() == 200) {
             return json_decode($resp->getBody()->getContents());
@@ -105,22 +134,22 @@ class InvoiceFoxAPI
         return false;
     }
 
-    public function itemList()
+    /**
+     * @return array
+     * @throws APIException
+     */
+    public function itemList(): array
     {
         $resp = $this->execute('item', 'select-all');
 
         return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
     }
 
-    public function itemCreate(array $data)
+    public function itemCreate(Model\Item $item)
     {
-        $resp = $this->execute('item', 'insert-into');
+        $resp = $this->execute('item', 'insert-into', $item->toArray());
 
-        if ($resp->getStatusCode() == 200) {
-            return json_decode($resp->getBody()->getContents());
-        }
-
-        throw new APIException("Invalid return status");
+        return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
     }
 
     public function itemUpdate(int $id, array $data)
