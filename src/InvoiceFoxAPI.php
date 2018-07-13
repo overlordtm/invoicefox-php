@@ -5,6 +5,7 @@ namespace RTFM\InvoiceFoxAPI;
 
 use GuzzleHttp;
 use RTFM\InvoiceFoxAPI\Exception;
+use RTFM\InvoiceFoxAPI\Exception\APIException;
 use RTFM\InvoiceFoxAPI\Model;
 
 class InvoiceFoxAPI
