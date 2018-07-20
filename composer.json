@@ -8,6 +8,12 @@
             "email": "andraz@rtfm.si"
         }
     ],
+    "scripts": {
+        "docker-test": [
+            "composer -n install",
+            "./vendor/bin/phpunit"
+        ]
+    },
     "minimum-stability": "alpha",
     "require": {
         "guzzlehttp/guzzle": "^6.3"

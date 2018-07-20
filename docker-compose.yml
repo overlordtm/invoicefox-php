@@ -1,23 +1,34 @@
 version: '3'
 services:
   php7.0-cli:
-    build: docker/php7.0-cli
-    volumes:
-      - .:/app
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.php7.0-cli
     environment:
       - INVOICEFOX_API_KEY
     env_file: .env
   php7.1-cli:
-    build: docker/php7.0-cli
-    volumes:
-      - .:/app
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.php7.1-cli
     environment:
       - INVOICEFOX_API_KEY
     env_file: .env
   php7.2-cli:
-    build: docker/php7.0-cli
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.php7.2-cli
+    environment:
+      - INVOICEFOX_API_KEY
+    env_file: .env
+
+  workspace:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.php7.0-cli
     volumes:
       - .:/app
     environment:
       - INVOICEFOX_API_KEY
     env_file: .env
+    entrypoint: sh
