@@ -21,7 +21,7 @@ class InvoicesRepository extends Resource
      */
     public function list()
     {
-        return parent::list();
+        return parent::_list();
     }
 
     /**
@@ -32,7 +32,7 @@ class InvoicesRepository extends Resource
      */
     public function get(int $id)
     {
-        return parent::get($id);
+        return parent::_get($id);
     }
 
     /**
@@ -42,7 +42,7 @@ class InvoicesRepository extends Resource
      */
     public function delete(int $id)
     {
-        return parent::delete($id);
+        return parent::_delete($id);
     }
 
     /**
@@ -51,9 +51,9 @@ class InvoicesRepository extends Resource
      * @throws \RTFM\InvoiceFoxAPI\Exception\APIException
      * @throws \RTFM\InvoiceFoxAPI\Exception\NotFoundException
      */
-    public function create(ArrayModel $obj)
+    public function create(Invoice $obj)
     {
-        return parent::create($obj);
+        return parent::_create($obj);
     }
 
     /**
@@ -62,9 +62,9 @@ class InvoicesRepository extends Resource
      * @throws \RTFM\InvoiceFoxAPI\Exception\APIException
      * @throws \RTFM\InvoiceFoxAPI\Exception\NotFoundException
      */
-    public function update(ArrayModel $obj)
+    public function update(Invoice $obj)
     {
-        return parent::update($obj);
+        return parent::_update($obj);
     }
 
 

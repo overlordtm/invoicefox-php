@@ -14,7 +14,7 @@ use RTFM\InvoiceFoxAPI\Exception\APIException;
 use RTFM\InvoiceFoxAPI\Model\ArrayModel;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 
-class Resource
+abstract class Resource
 {
 
     /** @var string */
@@ -145,7 +145,7 @@ class Resource
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function list()
+    public function _list()
     {
         $resp = $this->autoRequest('list',  $this->postData());
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, false, true);
@@ -157,7 +157,7 @@ class Resource
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function get(int $id)
+    public function _get(int $id)
     {
         $resp = $this->autoRequest('get',  $this->postData(['id' => $id]));
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
@@ -168,7 +168,7 @@ class Resource
      * @return bool
      * @throws APIException
      */
-    public function delete(int $id)
+    public function _delete(int $id)
     {
 
         $resp = $this->autoRequest('delete', $this->postData(['id' => $id]));
@@ -191,7 +191,7 @@ class Resource
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function create(ArrayModel $obj)
+    public function _create(ArrayModel $obj)
     {
         $resp = $this->autoRequest('create', $this->postData($obj->toArray()));
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
@@ -203,7 +203,7 @@ class Resource
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function update(ArrayModel $obj)
+    public function _update(ArrayModel $obj)
     {
         $resp = $this->autoRequest('update',  $this->postData($obj->toArray()));
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
