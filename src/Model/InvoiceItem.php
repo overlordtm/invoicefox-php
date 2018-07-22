@@ -1,18 +1,31 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: az
- * Date: 11.7.2018
- * Time: 13:37
- */
 
 namespace RTFM\InvoiceFoxAPI\Model;
 
 
-class InvoiceItem implements ArrayModel
+class InvoiceItem extends BaseModel
 {
 
-        private static $create_fields = array("title", "discount", "id_invoice_sent", "id_preinvoice", "mu", "price", "prepay_percent", "qty", "vat"); //int
+    public static $requiredFields = array(
+        "title",
+		"qty",
+		"price",
+		"vat",
+		"id_invoice_sent"
+    );
+
+    public static $createFields = array(
+        "title",
+        "price",
+        "qty",
+        "mu",
+        "discount",
+        "vat",
+        "id_invoice_sent",
+        "id_preinvoice",
+        "prepay_percent",
+    );
+
     protected $id; //int
     protected $id_invoice_sent; //String
     protected $title; //double
@@ -27,20 +40,7 @@ class InvoiceItem implements ArrayModel
     protected $id_preinvoice; //object
     protected $p_title; //double
     protected $value; //double
-protected $vat_value;
-
-    public static function from($data)
-    {
-        $obj = new self();
-
-        foreach ($data as $key => $value) {
-            if (property_exists($obj, $key)) {
-                $obj->{$key} = $value;
-            }
-        }
-
-        return $obj;
-    }
+    protected $vat_value;
 
     public static function fromItem(Item $item)
     {
@@ -57,17 +57,6 @@ protected $vat_value;
         return $obj;
     }
 
-    public function toArray(): array
-    {
-        $ret = array();
-
-        foreach (self::$create_fields as $field) {
-            $ret[$field] = $this->$field;
-        }
-
-        return $ret;
-    }
-
     /**
      * @return mixed
      */
@@ -78,10 +67,12 @@ protected $vat_value;
 
     /**
      * @param mixed $id
+     * @return InvoiceItem
      */
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -94,10 +85,12 @@ protected $vat_value;
 
     /**
      * @param mixed $id_invoice_sent
+     * @return InvoiceItem
      */
     public function setIdInvoiceSent($id_invoice_sent)
     {
         $this->id_invoice_sent = $id_invoice_sent;
+        return $this;
     }
 
     /**
@@ -110,10 +103,12 @@ protected $vat_value;
 
     /**
      * @param mixed $title
+     * @return InvoiceItem
      */
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -126,10 +121,12 @@ protected $vat_value;
 
     /**
      * @param mixed $qty
+     * @return InvoiceItem
      */
     public function setQty($qty)
     {
         $this->qty = $qty;
+        return $this;
     }
 
     /**
@@ -142,10 +139,12 @@ protected $vat_value;
 
     /**
      * @param mixed $mu
+     * @return InvoiceItem
      */
     public function setMu($mu)
     {
         $this->mu = $mu;
+        return $this;
     }
 
     /**
@@ -158,10 +157,12 @@ protected $vat_value;
 
     /**
      * @param mixed $price
+     * @return InvoiceItem
      */
     public function setPrice($price)
     {
         $this->price = $price;
+        return $this;
     }
 
     /**
@@ -174,10 +175,12 @@ protected $vat_value;
 
     /**
      * @param mixed $vat
+     * @return InvoiceItem
      */
     public function setVat($vat)
     {
         $this->vat = $vat;
+        return $this;
     }
 
     /**
@@ -190,10 +193,12 @@ protected $vat_value;
 
     /**
      * @param mixed $discount
+     * @return InvoiceItem
      */
     public function setDiscount($discount)
     {
         $this->discount = $discount;
+        return $this;
     }
 
     /**
@@ -206,10 +211,12 @@ protected $vat_value;
 
     /**
      * @param mixed $id_account
+     * @return InvoiceItem
      */
     public function setIdAccount($id_account)
     {
         $this->id_account = $id_account;
+        return $this;
     }
 
     /**
@@ -222,10 +229,12 @@ protected $vat_value;
 
     /**
      * @param mixed $sortorder
+     * @return InvoiceItem
      */
     public function setSortorder($sortorder)
     {
         $this->sortorder = $sortorder;
+        return $this;
     }
 
     /**
@@ -238,10 +247,12 @@ protected $vat_value;
 
     /**
      * @param mixed $percent
+     * @return InvoiceItem
      */
     public function setPercent($percent)
     {
         $this->percent = $percent;
+        return $this;
     }
 
     /**
@@ -254,10 +265,12 @@ protected $vat_value;
 
     /**
      * @param mixed $id_preinvoice
+     * @return InvoiceItem
      */
     public function setIdPreinvoice($id_preinvoice)
     {
         $this->id_preinvoice = $id_preinvoice;
+        return $this;
     }
 
     /**
@@ -270,10 +283,12 @@ protected $vat_value;
 
     /**
      * @param mixed $p_title
+     * @return InvoiceItem
      */
     public function setPTitle($p_title)
     {
         $this->p_title = $p_title;
+        return $this;
     }
 
     /**
@@ -286,10 +301,12 @@ protected $vat_value;
 
     /**
      * @param mixed $value
+     * @return InvoiceItem
      */
     public function setValue($value)
     {
         $this->value = $value;
+        return $this;
     }
 
     /**
@@ -302,9 +319,12 @@ protected $vat_value;
 
     /**
      * @param mixed $vat_value
+     * @return InvoiceItem
      */
     public function setVatValue($vat_value)
     {
         $this->vat_value = $vat_value;
+        return $this;
     }
+
 }

@@ -4,14 +4,14 @@ namespace RTFM\InvoiceFoxAPI\Tests\Integration;
 
 use DateTime;
 use ReflectionClass;
-use RTFM\InvoiceFoxAPI\API\APIResource;
+use RTFM\InvoiceFoxAPI\API\Resource;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 use RTFM\InvoiceFoxAPI\Tests\BaseTestCase;
 
 abstract class CRUDTestCase extends BaseTestCase
 {
 
-    /** @var APIResource */
+    /** @var Resource */
     protected $repo;
 
     /** @var string */
@@ -26,7 +26,7 @@ abstract class CRUDTestCase extends BaseTestCase
     /**
      * @return BaseModel
      */
-    abstract protected function createModel();
+    abstract protected static function createModel();
 
     protected function getterName($propertName, $capitalizeFirstCharacter = true)
     {
@@ -60,6 +60,7 @@ abstract class CRUDTestCase extends BaseTestCase
         $this->assertNotNull($createdModel->$idGetter(), "Created model shoud have ID set");
 
         foreach ($model::$requiredFields as $field) {
+
             $getter = $this->getterName($field);
 
 //            $expected = $model->$getter();

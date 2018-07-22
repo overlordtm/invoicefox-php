@@ -14,7 +14,7 @@ use RTFM\InvoiceFoxAPI\Exception\APIException;
 use RTFM\InvoiceFoxAPI\Model\ArrayModel;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 
-class APIResource
+class Resource
 {
 
     /** @var string */
@@ -40,25 +40,14 @@ class APIResource
         $this->client = $client;
     }
 
-    private static function id_extractor($data): int
-    {
-        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
-            return intval($data->id);
-        } else {
-            throw new Exception\APIException("Unknown response format");
-        }
-    }
-
-    /**
-     * @return array
-     * @throws APIException
-     * @throws Exception\NotFoundException
-     */
-    public function list()
-    {
-        $resp = $this->autoRequest('list');
-        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, false, true);
-    }
+//    private static function id_extractor($data): int
+//    {
+//        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
+//            return intval($data->id);
+//        } else {
+//            throw new Exception\APIException("Unknown response format");
+//        }
+//    }
 
     private function autoRequest($op, $data = [])
     {
@@ -139,6 +128,30 @@ class APIResource
     }
 
     /**
+     * @param $obj array
+     * @return array
+     */
+    protected function postData($obj = NULL) {
+        if($obj != NULL) {
+            return $obj;
+        } else {
+            return [];
+        }
+
+    }
+
+    /**
+     * @return array
+     * @throws APIException
+     * @throws Exception\NotFoundException
+     */
+    public function list()
+    {
+        $resp = $this->autoRequest('list',  $this->postData());
+        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, false, true);
+    }
+
+    /**
      * @param int $id
      * @return BaseModel
      * @throws APIException
@@ -146,7 +159,7 @@ class APIResource
      */
     public function get(int $id)
     {
-        $resp = $this->autoRequest('get', ['id' => $id]);
+        $resp = $this->autoRequest('get',  $this->postData(['id' => $id]));
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
     }
 
@@ -158,7 +171,7 @@ class APIResource
     public function delete(int $id)
     {
 
-        $resp = $this->autoRequest('delete', ['id' => $id]);
+        $resp = $this->autoRequest('delete', $this->postData(['id' => $id]));
 
         $statusCode = $resp->getStatusCode();
 
@@ -180,7 +193,7 @@ class APIResource
      */
     public function create(ArrayModel $obj)
     {
-        $resp = $this->autoRequest('create', $obj->toArray());
+        $resp = $this->autoRequest('create', $this->postData($obj->toArray()));
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
     }
 
@@ -192,7 +205,7 @@ class APIResource
      */
     public function update(ArrayModel $obj)
     {
-        $resp = $this->autoRequest('update', $obj->toArray());
+        $resp = $this->autoRequest('update',  $this->postData($obj->toArray()));
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
     }
 

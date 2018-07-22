@@ -24,7 +24,7 @@ class PartnerTest extends CRUDTestCase
     /**
      * @return \RTFM\InvoiceFoxAPI\Model\BaseModel|Partner
      */
-    protected function createModel()
+    protected static function createModel()
     {
         $model = new Partner();
 

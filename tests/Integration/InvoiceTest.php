@@ -24,7 +24,7 @@ class InvoiceTest extends CRUDTestCase
     /**
      * @return \RTFM\InvoiceFoxAPI\Model\BaseModel|Invoice
      */
-    protected function createModel()
+    protected static function createModel()
     {
         $model = new Invoice();
 

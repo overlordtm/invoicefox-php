@@ -13,7 +13,7 @@ use RTFM\InvoiceFoxAPI\Model\ArrayModel;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 use RTFM\InvoiceFoxAPI\Model\Partner;
 
-class PartnersRepository extends APIResource
+class PartnersRepository extends Resource
 {
 
     protected $resourceName = 'partner';

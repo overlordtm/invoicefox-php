@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace RTFM\InvoiceFoxAPI;
 
 use GuzzleHttp;
+use RTFM\InvoiceFoxAPI\API\InvoiceItemsRepository;
 use RTFM\InvoiceFoxAPI\API\InvoicesRepository;
 use RTFM\InvoiceFoxAPI\API\ItemsRepository;
 use RTFM\InvoiceFoxAPI\API\PartnersRepository;
@@ -74,6 +75,14 @@ class InvoiceFox
         );
 
         return new self($client);
+    }
+
+    /**
+     * @return InvoiceItemsRepository
+     */
+    public function invoice(int $id)
+    {
+        return new InvoiceItemsRepository($this->client, $id);
     }
 
     /**

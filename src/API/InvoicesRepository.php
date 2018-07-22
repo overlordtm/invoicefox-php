@@ -7,7 +7,7 @@ use RTFM\InvoiceFoxAPI\Model\ArrayModel;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 use RTFM\InvoiceFoxAPI\Model\Invoice;
 
-class InvoicesRepository extends APIResource
+class InvoicesRepository extends Resource
 {
 
     protected $resourceName = 'invoice-sent';

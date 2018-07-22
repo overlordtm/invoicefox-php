@@ -11,7 +11,7 @@ namespace RTFM\InvoiceFoxAPI\API;
 
 use RTFM\InvoiceFoxAPI\Model\Transfer;
 
-class TransfersRepository extends APIResource
+class TransfersRepository extends Resource
 {
 
     protected $resourceName = 'transfer';

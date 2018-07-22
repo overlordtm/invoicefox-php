@@ -11,7 +11,7 @@ namespace RTFM\InvoiceFoxAPI\API;
 
 use RTFM\InvoiceFoxAPI\Model\Item;
 
-class ItemsRepository extends APIResource
+class ItemsRepository extends Resource
 {
 
     protected $resourceName = 'item';
