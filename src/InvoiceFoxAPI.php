@@ -71,16 +71,61 @@ class InvoiceFoxAPI
         return new self($client);
     }
 
-    public function invoices() {
+    private static function id_extractor($data): int
+    {
+        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
+            return intval($data->id);
+        } else {
+            throw new Exception\APIException("Unknown response format");
+        }
+    }
+
+    public function invoices()
+    {
         return $this->invoices;
     }
 
-    public function transfers() {
+    public function transfers()
+    {
         return $this->transfersRepository;
     }
 
-    public function partners() {
+    public function partners()
+    {
         return $this->partnersRepository;
+    }
+
+    public function partnerList(): array
+    {
+        $resp = $this->execute('partner', 'select-all');
+
+        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp, false, true);
+    }
+
+    public function execute(string $resource, string $method, $data = [], string $method2 = NULL): GuzzleHttp\Psr7\Response
+    {
+
+        $url = "API?_r=$resource&_m=$method";
+
+        if (!empty($method2)) {
+            $url = $url . "&_m2=" . $method2;
+        }
+
+        $options = [
+            'form_params' => $data
+        ];
+
+        // disable 5xx exceptions on delete, as 5xx is always thrown
+        if ($method == 'delete') {
+            $options['http_errors'] = false;
+        }
+
+        try {
+            return $this->client->request('POST', $url, $options);
+        } catch (GuzzleHttp\Exception\ServerException $exception) {
+            return NULL;
+        }
+
     }
 
     /**
@@ -118,23 +163,6 @@ class InvoiceFoxAPI
         }
 
         throw new Exception\APIException("Invalid return status");
-    }
-
-    private static function id_extractor($data): int
-    {
-        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
-            return intval($data->id);
-        } else {
-            throw new Exception\APIException("Unknown response format");
-        }
-    }
-
-
-    public function partnerList(): array
-    {
-        $resp = $this->execute('partner', 'select-all');
-
-        return $this->handleResponse(array(Model\Partner::class, 'from'), $resp, false, true);
     }
 
     /**
@@ -188,6 +216,23 @@ class InvoiceFoxAPI
         return $this->resourceDelete('partner', $id);
     }
 
+    private function resourceDelete(string $resource, int $id, $method = 'delete')
+    {
+
+        $resp = $this->execute($resource, 'delete', ['id' => $id]);
+
+        if ($resp->getStatusCode() == 200) {
+            return true;
+        }
+
+        // TODO: why 5xx??
+        if ($resp->getStatusCode() == 500) {
+            return true;
+        }
+
+        throw new APIException("Invalid return status");
+    }
+
     public function itemList(): array
     {
         $resp = $this->execute('item', 'select-all');
@@ -202,13 +247,6 @@ class InvoiceFoxAPI
         return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
     }
 
-    public function itemFind(string $search): array
-    {
-        $resp = $this->execute('item', 'search', ["value" => $search]);
-
-        return $this->handleResponse(array(Model\Item::class, 'from'), $resp, false, true);
-    }
-
     public function itemGetByCode(string $code): Model\Item
     {
         $items = $this->itemFind($code);
@@ -221,6 +259,13 @@ class InvoiceFoxAPI
         }
 
         throw new Exception\NotFoundException();
+    }
+
+    public function itemFind(string $search): array
+    {
+        $resp = $this->execute('item', 'search', ["value" => $search]);
+
+        return $this->handleResponse(array(Model\Item::class, 'from'), $resp, false, true);
     }
 
     public function itemCreate(Model\Item $item): int
@@ -336,49 +381,6 @@ class InvoiceFoxAPI
     public function invoiceDelete($id)
     {
         return $this->resourceDelete('invoice-sent', $id);
-    }
-
-    private function resourceDelete(string $resource, int $id, $method = 'delete')
-    {
-
-        $resp = $this->execute($resource, 'delete', ['id' => $id]);
-
-        if ($resp->getStatusCode() == 200) {
-            return true;
-        }
-
-        // TODO: why 5xx??
-        if ($resp->getStatusCode() == 500) {
-            return true;
-        }
-
-        throw new APIException("Invalid return status");
-    }
-
-    public function execute(string $resource, string $method, $data = [], string $method2 = NULL): GuzzleHttp\Psr7\Response
-    {
-
-        $url = "API?_r=$resource&_m=$method";
-
-        if (!empty($method2)) {
-            $url = $url . "&_m2=" . $method2;
-        }
-
-        $options = [
-            'form_params' => $data
-        ];
-
-        // disable 5xx exceptions on delete, as 5xx is always thrown
-        if ($method == 'delete') {
-            $options['http_errors'] = false;
-        }
-
-        try {
-            return $this->client->request('POST', $url, $options);
-        } catch (GuzzleHttp\Exception\ServerException $exception) {
-            return NULL;
-        }
-
     }
 
 }

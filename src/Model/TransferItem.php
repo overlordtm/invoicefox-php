@@ -11,119 +11,87 @@ namespace RTFM\InvoiceFoxAPI\Model;
 
 class TransferItem implements ArrayModel
 {
-    /**
+        private static $create_fields = array("descr", "discount", "id_item", "id_transfer", "mu", "price", "price2", "qty", "vat"); //int
+/**
      * @var int
      */
     public $id; //int
-
-    /**
+/**
      * @var int
      */
     public $id_transfer; //int
-
+/**
+     * @var int
+     */
+    public $id_item; //String
+/**
+     * @var string
+     */
+    public $descr;
     /**
      * @var int
      */
-    public $id_item; //int
-
-    /**
+    public $qty; //String
+/**
      * @var string
      */
-    public $descr; //String
-
-    /**
-     * @var int
-     */
-    public $qty;
-
-    /**
-     * @var string
-     */
-    public $mu; //String
-
-    /**
+    public $mu; //double
+/**
      * @var double
      */
     public $price; //double
-
-    /**
+/**
      * @var double
      */
     public $discount; //double
-
-    /**
+/**
      * @var double
      */
-    public $vat; //double
-
+    public $vat;
     /**
      * @var bool
      */
-    public $is_product;
-
-    /**
+    public $is_product; //int
+/**
      * @var int
      */
     public $id_transfer_b; //int
-
-    /**
+/**
      * @var bool
      */
-    public $dont_inventory; //int
-
-    /**
+    public $dont_inventory; //double
+/**
      * @var double
      */
     public $price2; //double
-
-    /**
+/**
      * @var double
      */
     public $discount2; //double
-
-    /**
+/**
      * @var double
      */
     public $value; //double
-
-    /**
+/**
      * @var double
      */
-    public $value2; //double
-
-    /**
+    public $value2; //String
+/**
      * @var string
      */
     public $code; //String
-
-    /**
+/**
      * @var string
      */
-    public $barcode; //String
-
-    /**
+    public $barcode; //double
+/**
      * @var double
      */
-    public $margin_val; //double
-
-    /**
+    public $margin_val; //object
+/**
      * @var double
      */
-    public $margin_perc; //object
-
-
-    private static $create_fields = array("descr", "discount", "id_item", "id_transfer", "mu", "price", "price2", "qty", "vat");
-
-    public function toArray(): array
-    {
-        $ret = array();
-
-        foreach(self::$create_fields as $field) {
-            $ret[$field] = $this->$field;
-        }
-
-        return $ret;
-    }
+    public $margin_perc;
 
     public static function from($data)
     {
@@ -150,6 +118,17 @@ class TransferItem implements ArrayModel
         $obj->setVat($item->getTax());
 
         return $obj;
+    }
+
+    public function toArray(): array
+    {
+        $ret = array();
+
+        foreach (self::$create_fields as $field) {
+            $ret[$field] = $this->$field;
+        }
+
+        return $ret;
     }
 
     /**

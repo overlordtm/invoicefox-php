@@ -9,7 +9,6 @@
 namespace RTFM\InvoiceFoxAPI\Exception;
 
 
-use RTFM\InvoiceFoxAPI\Exception\APIException;
 use Throwable;
 
 class NotImplementedException extends APIException

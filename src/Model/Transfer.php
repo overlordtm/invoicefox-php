@@ -39,11 +39,6 @@ class Transfer implements ArrayModel
     private $id_invoice_sent;
     private $docsubtype;
 
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
-
     public static function from($data)
     {
         $obj = new self();
@@ -55,6 +50,11 @@ class Transfer implements ArrayModel
         }
 
         return $obj;
+    }
+
+    public function toArray(): array
+    {
+        return get_object_vars($this);
     }
 
     /**

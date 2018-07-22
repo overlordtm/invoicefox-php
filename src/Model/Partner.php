@@ -146,11 +146,6 @@ class Partner implements ArrayModel
      */
     private $flags = 0;
 
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
-
     public static function from($data)
     {
         $obj = new self();
@@ -162,6 +157,11 @@ class Partner implements ArrayModel
         }
 
         return $obj;
+    }
+
+    public function toArray(): array
+    {
+        return get_object_vars($this);
     }
 
     /**
@@ -541,7 +541,6 @@ class Partner implements ArrayModel
         $this->flags = $flags;
         return $this;
     }
-
 
 
 }

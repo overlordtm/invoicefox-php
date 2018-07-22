@@ -710,5 +710,4 @@ class Invoice extends BaseModel
     }
 
 
-
 }

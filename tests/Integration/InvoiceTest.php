@@ -6,7 +6,7 @@
  * Time: 11:42
  */
 
-namespace RTFM\InvoiceFoxAPI\Tests\Invoice;
+namespace RTFM\InvoiceFoxAPI\Tests\Integration;
 
 
 use RTFM\InvoiceFoxAPI\Model\Invoice;

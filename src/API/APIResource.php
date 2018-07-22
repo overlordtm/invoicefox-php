@@ -8,11 +8,9 @@
 
 namespace RTFM\InvoiceFoxAPI\API;
 
-use Faker\Provider\Base;
 use GuzzleHttp;
 use RTFM\InvoiceFoxAPI\Exception;
 use RTFM\InvoiceFoxAPI\Exception\APIException;
-use RTFM\InvoiceFoxAPI\Model\ArrayModel;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 
 class APIResource
@@ -21,10 +19,10 @@ class APIResource
     /** @var string */
     protected $resourceName;
 
-    /** @var  */
+    /** @var */
     protected $resourceModel;
 
-    /** @var array  */
+    /** @var array */
     protected $methods = array(
         'list' => 'select-all',
         'get' => 'select-one',
@@ -41,70 +39,65 @@ class APIResource
         $this->client = $client;
     }
 
+    private static function id_extractor($data): int
+    {
+        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
+            return intval($data->id);
+        } else {
+            throw new Exception\APIException("Unknown response format");
+        }
+    }
+
     /**
      * @return array
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function list() {
+    public function list()
+    {
         $resp = $this->autoRequest('list');
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, false, true);
     }
 
-    /**
-     * @param int $id
-     * @return BaseModel
-     * @throws APIException
-     * @throws Exception\NotFoundException
-     */
-    public function get(int $id) {
-        $resp = $this->autoRequest('get', ['id', $id]);
-        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
+    private function autoRequest($op, $data = [])
+    {
+        return $this->doRequest($this->resourceName, $this->getResourceMethod($op), $data);
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     * @throws APIException
-     */
-    public function delete(int $id) {
+    private function doRequest(string $resource, string $method, $data = [], string $method2 = NULL): GuzzleHttp\Psr7\Response
+    {
 
-        $resp = $this->autoRequest('delete', ['id' => $id]);
+        $url = "API?_r=$resource&_m=$method";
 
-        $statusCode = $resp->getStatusCode();
-
-        switch ($statusCode) {
-            case 200:
-            case 500:
-                return true;
-            default:
-                $body = $resp->getBody()->getContents();
-                throw new APIException("Invalid return status: $statusCode ($body)");
+        if (!empty($method2)) {
+            $url = $url . "&_m2=" . $method2;
         }
+
+        $options = [
+            'form_params' => $data
+        ];
+
+        // disable 5xx exceptions on delete, as 5xx is always thrown
+        if ($method == 'delete') {
+            $options['http_errors'] = false;
+        }
+
+        try {
+            return $this->client->request('POST', $url, $options);
+        } catch (GuzzleHttp\Exception\ServerException $exception) {
+            return NULL;
+        }
+
     }
 
-    /**
-     * @param BaseModel $obj
-     * @return BaseModel
-     * @throws APIException
-     * @throws Exception\NotFoundException
-     */
-    public function create(BaseModel $obj) {
-        $resp = $this->autoRequest('create', $obj->toArray());
-        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
-    }
+    private function getResourceMethod(string $op)
+    {
+        if (!array_key_exists($op, $this->methods)) {
+            throw new Exception\NotImplementedException("Operation $op is not implemented");
+        }
 
-    /**
-     * @param BaseModel $obj
-     * @return BaseModel
-     * @throws APIException
-     * @throws Exception\NotFoundException
-     */
-    public function update(BaseModel $obj) {
-        $resp = $this->autoRequest('update', $obj->toArray());
-        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
+        return $this->methods[$op];
     }
-
 
     /**
      * @param $callback
@@ -144,51 +137,62 @@ class APIResource
         throw new Exception\APIException("Invalid return status");
     }
 
-    private static function id_extractor($data): int
+    /**
+     * @param int $id
+     * @return BaseModel
+     * @throws APIException
+     * @throws Exception\NotFoundException
+     */
+    public function get(int $id)
     {
-        if (count(get_object_vars($data)) == 1 && property_exists($data, "id")) {
-            return intval($data->id);
-        } else {
-            throw new Exception\APIException("Unknown response format");
-        }
+        $resp = $this->autoRequest('get', ['id', $id]);
+        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
     }
 
-    private function autoRequest($op, $data = []) {
-        return $this->doRequest($this->resourceName, $this->getResourceMethod($op), $data);
-    }
-
-    private function getResourceMethod(string $op) {
-        if(!array_key_exists($op, $this->methods)) {
-            throw new Exception\NotImplementedException("Operation $op is not implemented");
-        }
-
-        return $this->methods[$op];
-    }
-
-    private function doRequest(string $resource, string $method, $data = [], string $method2 = NULL): GuzzleHttp\Psr7\Response
+    /**
+     * @param int $id
+     * @return bool
+     * @throws APIException
+     */
+    public function delete(int $id)
     {
 
-        $url = "API?_r=$resource&_m=$method";
+        $resp = $this->autoRequest('delete', ['id' => $id]);
 
-        if (!empty($method2)) {
-            $url = $url . "&_m2=" . $method2;
+        $statusCode = $resp->getStatusCode();
+
+        switch ($statusCode) {
+            case 200:
+            case 500:
+                return true;
+            default:
+                $body = $resp->getBody()->getContents();
+                throw new APIException("Invalid return status: $statusCode ($body)");
         }
+    }
 
-        $options = [
-            'form_params' => $data
-        ];
+    /**
+     * @param BaseModel $obj
+     * @return BaseModel
+     * @throws APIException
+     * @throws Exception\NotFoundException
+     */
+    public function create(BaseModel $obj)
+    {
+        $resp = $this->autoRequest('create', $obj->toArray());
+        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
+    }
 
-        // disable 5xx exceptions on delete, as 5xx is always thrown
-        if ($method == 'delete') {
-            $options['http_errors'] = false;
-        }
-
-        try {
-            return $this->client->request('POST', $url, $options);
-        } catch (GuzzleHttp\Exception\ServerException $exception) {
-            return NULL;
-        }
-
+    /**
+     * @param BaseModel $obj
+     * @return BaseModel
+     * @throws APIException
+     * @throws Exception\NotFoundException
+     */
+    public function update(BaseModel $obj)
+    {
+        $resp = $this->autoRequest('update', $obj->toArray());
+        return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
     }
 
 }

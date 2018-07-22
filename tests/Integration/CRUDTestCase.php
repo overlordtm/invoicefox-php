@@ -1,6 +1,6 @@
 <?php
 
-namespace RTFM\InvoiceFoxAPI\Tests\Invoice;
+namespace RTFM\InvoiceFoxAPI\Tests\Integration;
 
 use DateTime;
 use ReflectionClass;

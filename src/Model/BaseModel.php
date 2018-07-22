@@ -12,7 +12,7 @@ namespace RTFM\InvoiceFoxAPI\Model;
 class BaseModel implements ArrayModel
 {
 
-    /** @var string  */
+    /** @var string */
     public static $idField = 'id';
 
     /** @var array|null */
@@ -23,6 +23,19 @@ class BaseModel implements ArrayModel
 
     /** @var string */
     public static $dateFormat = 'd.m.Y';
+
+    public static function from($data)
+    {
+        $obj = new static();
+
+        foreach ($data as $key => $value) {
+            if (property_exists($obj, $key)) {
+                $obj->{$key} = $value;
+            }
+        }
+
+        return $obj;
+    }
 
     /** @return int|null */
     public function getId()
@@ -36,30 +49,17 @@ class BaseModel implements ArrayModel
 
     public function toArray(): array
     {
-        if(is_null(static::$createFields)) {
+        if (is_null(static::$createFields)) {
             return get_object_vars($this);
         } else {
             $ret = array();
 
-            foreach(static::$createFields as $field) {
+            foreach (static::$createFields as $field) {
                 $ret[$field] = $this->$field;
             }
 
             return $ret;
         }
-    }
-
-    public static function from($data)
-    {
-        $obj = new static();
-
-        foreach ($data as $key => $value) {
-            if (property_exists($obj, $key)) {
-                $obj->{$key} = $value;
-            }
-        }
-
-        return $obj;
     }
 
 }

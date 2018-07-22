@@ -12,34 +12,23 @@ namespace RTFM\InvoiceFoxAPI\Model;
 class InvoiceItem implements ArrayModel
 {
 
+        private static $create_fields = array("title", "discount", "id_invoice_sent", "id_preinvoice", "mu", "price", "prepay_percent", "qty", "vat"); //int
     protected $id; //int
-    protected $id_invoice_sent; //int
-    protected $title; //String
-    protected $qty; //double
-    protected $mu; //String
+    protected $id_invoice_sent; //String
+    protected $title; //double
+    protected $qty; //String
+    protected $mu; //double
     protected $price; //double
     protected $vat; //double
-    protected $discount; //double
+    protected $discount; //int
     protected $id_account; //int
-    protected $sortorder; //int
+    protected $sortorder; //object
     protected $percent; //object
     protected $id_preinvoice; //object
-    protected $p_title; //object
+    protected $p_title; //double
     protected $value; //double
-    protected $vat_value; //double
+protected $vat_value;
 
-    private static $create_fields = array("title", "discount", "id_invoice_sent", "id_preinvoice", "mu", "price", "prepay_percent", "qty", "vat");
-
-    public function toArray(): array
-    {
-        $ret = array();
-
-        foreach(self::$create_fields as $field) {
-            $ret[$field] = $this->$field;
-        }
-
-        return $ret;
-    }
     public static function from($data)
     {
         $obj = new self();
@@ -52,7 +41,6 @@ class InvoiceItem implements ArrayModel
 
         return $obj;
     }
-
 
     public static function fromItem(Item $item)
     {
@@ -67,6 +55,17 @@ class InvoiceItem implements ArrayModel
         $obj->setVat($item->getTax());
 
         return $obj;
+    }
+
+    public function toArray(): array
+    {
+        $ret = array();
+
+        foreach (self::$create_fields as $field) {
+            $ret[$field] = $this->$field;
+        }
+
+        return $ret;
     }
 
     /**

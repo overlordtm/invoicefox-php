@@ -8,9 +8,7 @@ use RTFM\InvoiceFoxAPI\API\InvoicesRepository;
 use RTFM\InvoiceFoxAPI\API\ItemsRepository;
 use RTFM\InvoiceFoxAPI\API\PartnersRepository;
 use RTFM\InvoiceFoxAPI\API\TransfersRepository;
-use RTFM\InvoiceFoxAPI\Exception;
 use RTFM\InvoiceFoxAPI\Exception\APIException;
-use RTFM\InvoiceFoxAPI\Model;
 
 class InvoiceFox
 {
@@ -81,25 +79,29 @@ class InvoiceFox
     /**
      * @return InvoicesRepository
      */
-    public function invoices() {
+    public function invoices()
+    {
         return $this->invoicesRepository;
     }
 
     /**
      * @return TransfersRepository
      */
-    public function transfers() {
+    public function transfers()
+    {
         return $this->transfersRepository;
     }
 
     /**
      * @return PartnersRepository
      */
-    public function partners() {
+    public function partners()
+    {
         return $this->partnersRepository;
     }
 
-    public function items() {
+    public function items()
+    {
         return $this->itemsRepository;
     }
 }
