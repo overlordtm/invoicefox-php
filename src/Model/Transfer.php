@@ -9,8 +9,26 @@
 namespace RTFM\InvoiceFoxAPI\Model;
 
 
-class Transfer implements ArrayModel
+class Transfer extends BaseModel
 {
+
+    public static $requiredFields = array(
+        "docnum",
+        "date_created",
+    );
+
+    public static $createFields = array(
+        "id",
+        "payment_act",
+        "doctype",
+        "docnum",
+        "docsubtype",
+        "id_contact_from",
+        "id_contact_to",
+        "date_created",
+        "pub_notes",
+        "pub_notes2",
+    );
 
     const DOCTYPE_IN = 0;
     const DOCTYPE_OUT = 1;
@@ -24,38 +42,20 @@ class Transfer implements ArrayModel
     const SUBTYPE_RETURN = 3;
     const SUBTYPE_INVENTORY_SURPLUS = 3;
 
-    private $id;
-    private $docnum;
-    private $date_created;
-    private $disabled;
+    protected $id;
+    protected $docnum;
+    protected $date_created;
+    protected $disabled;
 
-    private $pub_notes;
-    private $pub_notes2;
-    private $tags;
+    protected $pub_notes;
+    protected $pub_notes2;
+    protected $tags;
 
-    private $id_contact_from;
-    private $id_contact_to;
-    private $doctype;
-    private $id_invoice_sent;
-    private $docsubtype;
-
-    public static function from($data)
-    {
-        $obj = new self();
-
-        foreach ($data as $key => $value) {
-            if (property_exists($obj, $key)) {
-                $obj->{$key} = $value;
-            }
-        }
-
-        return $obj;
-    }
-
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
+    protected $id_contact_from;
+    protected $id_contact_to;
+    protected $doctype;
+    protected $id_invoice_sent;
+    protected $docsubtype;
 
     /**
      * @return mixed
