@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace RTFM\InvoiceFoxAPI;
 
 use GuzzleHttp;
+use RTFM\InvoiceFoxAPI\API\InvoicesRepository;
+use RTFM\InvoiceFoxAPI\API\PartnersRepository;
+use RTFM\InvoiceFoxAPI\API\TransfersRepository;
 use RTFM\InvoiceFoxAPI\Exception;
 use RTFM\InvoiceFoxAPI\Exception\APIException;
 use RTFM\InvoiceFoxAPI\Model;
@@ -17,6 +20,20 @@ class InvoiceFoxAPI
      */
     private $client;
 
+    /**
+     * @var InvoicesRepository;
+     */
+    private $invoicesRepository;
+
+    /**
+     * @var TransfersRepository
+     */
+    private $transfersRepository;
+
+    /**
+     * @var PartnersRepository
+     */
+    private $partnersRepository;
 
     /**
      * InvoiceFoxAPI constructor.
@@ -24,6 +41,10 @@ class InvoiceFoxAPI
     public function __construct($client)
     {
         $this->client = $client;
+
+        $this->invoicesRepository = new InvoicesRepository($client);
+        $this->transfersRepository = new TransfersRepository($client);
+        $this->partnersRepository = new PartnersRepository($client);
     }
 
     public static function newInstance($apiKey = NULL)
@@ -50,6 +71,18 @@ class InvoiceFoxAPI
         return new self($client);
     }
 
+    public function invoices() {
+        return $this->invoices;
+    }
+
+    public function transfers() {
+        return $this->transfersRepository;
+    }
+
+    public function partners() {
+        return $this->partnersRepository;
+    }
+
     /**
      * @param $callback
      * @param $resp
@@ -63,23 +96,7 @@ class InvoiceFoxAPI
 
         if ($resp->getStatusCode() == 200) {
 
-            /*
-             * response is usually in form of
-             *
-             * [
-             *      [
-             *          {
-             *              ...
-             *          },
-             *          {
-             *              ...
-             *          }, ...
-             *      ]
-             * ]
-             */
             $data = json_decode($resp->getBody()->getContents());
-
-//            echo "Handler response" . var_export($data[0]);
 
             if (!is_array($data[0])) {
                 throw new Exception\APIException("Unknown response format");
@@ -94,13 +111,7 @@ class InvoiceFoxAPI
             }
 
             if ($single) {
-
-//                // might be full object or just id
-//                if (count(get_object_vars($data[0][0])) == 1 && property_exists($data[0][0], "id")) {
-//                    return $data[0][0]->id;
-//                } else {
                 return call_user_func($callback, $data[0][0]);
-//                }
             } else {
                 return array_map($callback, $data[0]);
             }
@@ -118,13 +129,7 @@ class InvoiceFoxAPI
         }
     }
 
-    /**
-     * List all partners
-     *
-     * @return array
-     * @throws Exception\APIException
-     * @throws Exception\NotFoundException
-     */
+
     public function partnerList(): array
     {
         $resp = $this->execute('partner', 'select-all');
@@ -180,24 +185,14 @@ class InvoiceFoxAPI
 
     public function partnerDelete(int $id): bool
     {
-        $resp = $this->execute('partner', 'delete', ['id' => $id]);
-
-        if ($resp->getStatusCode() == 200) {
-            return true;
-        }
-
-        if ($resp->getStatusCode() == 500) {
-            return true;
-        }
-
-        return false;
+        return $this->resourceDelete('partner', $id);
     }
 
     public function itemList(): array
     {
         $resp = $this->execute('item', 'select-all');
 
-        return $this->handleResponse(array(Model\Item::class, 'from'), $resp);
+        return $this->handleResponse(array(Model\Item::class, 'from'), $resp, false, true);
     }
 
     public function itemGet(int $id): Model\Item
@@ -231,7 +226,6 @@ class InvoiceFoxAPI
     public function itemCreate(Model\Item $item): int
     {
         $resp = $this->execute('item', 'insert-into', $item->toArray());
-
         return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
     }
 
@@ -241,14 +235,113 @@ class InvoiceFoxAPI
             throw new Exception\APIException("ID is not set on the Item");
         }
 
-        $resp = $this->execute('item', 'update', $item->toArray(), 'select-one');
-
+        $resp = $this->execute('item', 'update-select', $item->toArray());
         return $this->handleResponse(array(Model\Item::class, 'from'), $resp, true, false);
     }
 
     public function itemDelete(int $id): bool
     {
-        $resp = $this->execute('item', 'delete', ['id' => $id]);
+        return $this->resourceDelete('item', $id);
+    }
+
+    public function transferList(): array
+    {
+        $resp = $this->execute('transfer', 'select-all');
+        return $this->handleResponse(array(Model\Transfer::class, 'from'), $resp, false, true);
+    }
+
+    public function transferCreate(Model\Transfer $transfer): int
+    {
+        $resp = $this->execute('transfer', 'insert-into', $transfer->toArray());
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
+    }
+
+    public function transferDelete($id): bool
+    {
+        return $this->resourceDelete('transfer', $id);
+    }
+
+    public function transferUpdate(Model\Transfer $transfer): Model\Transfer
+    {
+        if (!is_int($transfer->getId())) {
+            throw new Exception\APIException("ID is not set on the Transfer");
+        }
+
+        $resp = $this->execute('transfer', 'update-select', $transfer->toArray());
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
+    }
+
+    public function transferAddItem(int $transfer_id, Model\TransferItem $item): array
+    {
+        $item->setIdTransfer($transfer_id);
+
+        $resp = $this->execute('transfer-b', 'insert-into', $item->toArray(), 'select-of');
+        return $this->handleResponse(array(Model\TransferItem::class, 'from'), $resp, false, false);
+    }
+
+    public function invoiceList()
+    {
+        $resp = $this->execute('invoice-sent', 'select-all');
+        return $this->handleResponse(array(Model\Invoice::class, 'from'), $resp, false, true);
+    }
+
+    public function invoiceGet($id)
+    {
+        $resp = $this->execute('invoice-sent', 'select-one', ['id' => $id]);
+        return $this->handleResponse(array(Model\Invoice::class, 'from'), $resp, true, false);
+    }
+
+    public function invoiceGetByTitle(string $title)
+    {
+        $resp = $this->execute('invoice-sent', 'select-by-title', ['title' => $title]);
+        return $this->handleResponse(array(Model\Invoice::class, 'from'), $resp, false, true);
+    }
+
+    public function invoiceCreate(Model\Invoice $invoice)
+    {
+        $resp = $this->execute('invoice-sent', 'insert-into', $invoice->toArray());
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
+    }
+
+    public function invoiceUpdate(Model\Invoice $invoice)
+    {
+        $resp = $this->execute('invoice-sent', 'update-select', $invoice->toArray());
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
+    }
+
+    public function invoiceListItems($id)
+    {
+        $resp = $this->execute('invoice-sent-b', 'select-of-more', ['id_invoice_sent' => $id]);
+        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, false, true);
+    }
+
+    public function invoiceAddItem($id, Model\InvoiceItem $invoiceItem)
+    {
+        $invoiceItem->setIdInvoiceSent($id);
+
+        $resp = $this->execute('invoice-sent-b', 'insert-into', $invoiceItem->toArray(), 'select-of');
+        return $this->handleResponse(array(Model\InvoiceItem::class, 'from'), $resp, false, false);
+    }
+
+    public function invoiceDeleteItem($id)
+    {
+        return $this->resourceDelete('invoice-sent-b', $id);
+    }
+
+    public function invoiceUpdateItem($id, Model\InvoiceItem $invoiceItem)
+    {
+        throw new \Exception("Not implemented");
+    }
+
+    public function invoiceDelete($id)
+    {
+        return $this->resourceDelete('invoice-sent', $id);
+    }
+
+    private function resourceDelete(string $resource, int $id, $method = 'delete')
+    {
+
+        $resp = $this->execute($resource, 'delete', ['id' => $id]);
 
         if ($resp->getStatusCode() == 200) {
             return true;
@@ -261,47 +354,6 @@ class InvoiceFoxAPI
 
         throw new APIException("Invalid return status");
     }
-
-    public function transferList(Model\Transfer $transfer): int
-    {
-        $resp = $this->execute('transfer', 'select-all', $transfer->toArray());
-        return $this->handleResponse(array(Model\Transfer::class, 'from'), $resp, false, true);
-    }
-
-    public function transferCreate(Model\Transfer $transfer): int
-    {
-        $resp = $this->execute('transfer', 'insert-into', $transfer->toArray());
-        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
-    }
-
-    public function transferUpdate(Model\Transfer $transfer): Model\Transfer
-    {
-        if (!is_int($transfer->getId())) {
-            throw new Exception\APIException("ID is not set on the Transfer");
-        }
-
-        $resp = $this->execute('transfer', 'update', $transfer->toArray(), 'select-one');
-        return $this->handleResponse(array(self::class, 'id_extractor'), $resp, true, false);
-    }
-
-    public function transferAddItem(int $transfer_id, Model\TransferItem $item): array
-    {
-        $item->setIdTransfer($transfer_id);
-
-        $resp = $this->execute('transfer-b', 'insert-into', $item->toArray(), 'select-of');
-        return $this->handleResponse(array(Model\TransferItem::class, 'from'), $resp, false, false);
-    }
-
-    public function invoiceCreate()
-    {
-
-    }
-
-    public function createProformaInvoice()
-    {
-
-    }
-
 
     public function execute(string $resource, string $method, $data = [], string $method2 = NULL): GuzzleHttp\Psr7\Response
     {

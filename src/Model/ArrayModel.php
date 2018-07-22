@@ -12,6 +12,11 @@ namespace RTFM\InvoiceFoxAPI\Model;
 interface ArrayModel
 {
 
+    /**
+     * @return int|null
+     */
+    public function getId();
+
     public function toArray(): array;
 
 }

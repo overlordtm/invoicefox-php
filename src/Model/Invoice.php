@@ -12,487 +12,554 @@ namespace RTFM\InvoiceFoxAPI\Model;
  * Class Item
  * @package RTFM\InvoiceFoxAPI\Model
  */
-class Invoice implements ArrayModel
+class Invoice extends BaseModel
 {
+    public static $requiredFields = array(
+        "id_partner",
+        "date_sent",
+        "date_served",
+        "date_to_pay",
+    );
 
-    private $id;
-    private $title;
-    private $date_sent;
-    private $date_to_pay;
-    private $date_served;
-    private $id_partner;
-    private $vat_level;
-    private $date_payed;
-    private $disabled;
-    private $pub_notes;
-    private $id_preinvoice;
-    private $tags;
-    private $reverse_vat;
-    private $pub_notes2;
-    private $payment;
-    private $payment_act;
-    private $date_served0;
-    private $doctype;
-    private $id_setup;
-    private $id_currency;
-    private $conv_rate;
-    private $reference_document;
-    private $reference_date;
-    private $docnum;
-    private $fiscal;
-    private $id_sales_location;
-    private $id_operator;
-    private $version;
-    private $to_fiscalize;
-    private $fiscalized;
-    private $id_invoice_sent_cn;
-    private $id_project;
+    public static $createFields = array(
+        "payment_act",
+        "id_preinvoice",
+        "doctype",
+        "title",
+        "version",
+        "id_partner",
+        "date_sent",
+        "date_served",
+        "date_served2",
+        "date_to_pay",
+        "payment",
+        "pub_notes",
+        "pub_notes2"
+    );
 
-    public static function from(object $data)
-    {
-        $obj = new self();
+    /** @var int */
+    protected $id;
 
-        foreach ($data as $key => $value) {
-            if (property_exists($obj, $key)) {
-                $obj->{$key} = $value;
-            }
-        }
+    /** @var string */
+    protected $title;
 
-        return $obj;
-    }
+    /** @var string */
+    protected $date_sent;
 
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
+    /** @var string */
+    protected $date_to_pay;
+
+    /** @var string */
+    protected $date_served = "";
+
+    /** @var int */
+    protected $id_partner;
+
+    /** @var double */
+    protected $vat_level;
+
+    /** @var string */
+    protected $date_payed;
+
+    /** @var bool */
+    protected $disabled;
+
+    /** @var string */
+    protected $pub_notes;
+
+    /** @var int */
+    protected $id_preinvoice;
+
+    /** @var string */
+    protected $tags;
+
+    /** @var bool */
+    protected $reverse_vat;
+
+    /** @var string */
+    protected $pub_notes2;
+
+    /** @var string */
+    protected $payment;
+
+    /** @var int */
+    protected $payment_act;
+
+    /** @var string */
+    protected $date_served0;
+
+    /** @var int */
+    protected $doctype;
+
+    /** @var int */
+    protected $id_setup;
+
+    /** @var int */
+    protected $id_currency;
+
+    /** @var double */
+    protected $conv_rate;
+
+    /** @var string */
+    protected $reference_document;
+
+    /** @var string */
+    protected $reference_date;
+
+    /** @var int */
+    protected $docnum;
+
+    /** @var mixed */
+    protected $fiscal;
+
+    /** @var mixed */
+    protected $id_sales_location;
+
+    /** @var mixed */
+    protected $id_operator;
+
+    /** @var int */
+    protected $version;
+
+    /** @var bool */
+    protected $to_fiscalize;
+
+    /** @var bool */
+    protected $fiscalized;
+
+    /** @var int */
+    protected $id_invoice_sent_cn;
+
+    /** @var int */
+    protected $id_project;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      * @return Invoice
      */
-    public function setId($id)
+    public function setId(int $id): Invoice
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * @param mixed $title
+     * @param string $title
      * @return Invoice
      */
-    public function setTitle($title)
+    public function setTitle(string $title): Invoice
     {
         $this->title = $title;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDateSent()
+    public function getDateSent(): string
     {
         return $this->date_sent;
     }
 
     /**
-     * @param mixed $date_sent
+     * @param string $date_sent
      * @return Invoice
      */
-    public function setDateSent($date_sent)
+    public function setDateSent(string $date_sent): Invoice
     {
         $this->date_sent = $date_sent;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDateToPay()
+    public function getDateToPay(): string
     {
         return $this->date_to_pay;
     }
 
     /**
-     * @param mixed $date_to_pay
+     * @param string $date_to_pay
      * @return Invoice
      */
-    public function setDateToPay($date_to_pay)
+    public function setDateToPay(string $date_to_pay): Invoice
     {
         $this->date_to_pay = $date_to_pay;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDateServed()
+    public function getDateServed(): string
     {
         return $this->date_served;
     }
 
     /**
-     * @param mixed $date_served
+     * @param string $date_served
      * @return Invoice
      */
-    public function setDateServed($date_served)
+    public function setDateServed(string $date_served): Invoice
     {
         $this->date_served = $date_served;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getIdPartner()
+    public function getIdPartner(): int
     {
         return $this->id_partner;
     }
 
     /**
-     * @param mixed $id_partner
+     * @param int $id_partner
      * @return Invoice
      */
-    public function setIdPartner($id_partner)
+    public function setIdPartner(int $id_partner): Invoice
     {
         $this->id_partner = $id_partner;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getVatLevel()
+    public function getVatLevel(): float
     {
         return $this->vat_level;
     }
 
     /**
-     * @param mixed $vat_level
+     * @param float $vat_level
      * @return Invoice
      */
-    public function setVatLevel($vat_level)
+    public function setVatLevel(float $vat_level): Invoice
     {
         $this->vat_level = $vat_level;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDatePayed()
+    public function getDatePayed(): string
     {
         return $this->date_payed;
     }
 
     /**
-     * @param mixed $date_payed
+     * @param string $date_payed
      * @return Invoice
      */
-    public function setDatePayed($date_payed)
+    public function setDatePayed(string $date_payed): Invoice
     {
         $this->date_payed = $date_payed;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getDisabled()
+    public function isDisabled(): bool
     {
         return $this->disabled;
     }
 
     /**
-     * @param mixed $disabled
+     * @param bool $disabled
      * @return Invoice
      */
-    public function setDisabled($disabled)
+    public function setDisabled(bool $disabled): Invoice
     {
         $this->disabled = $disabled;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPubNotes()
+    public function getPubNotes(): string
     {
         return $this->pub_notes;
     }
 
     /**
-     * @param mixed $pub_notes
+     * @param string $pub_notes
      * @return Invoice
      */
-    public function setPubNotes($pub_notes)
+    public function setPubNotes(string $pub_notes): Invoice
     {
         $this->pub_notes = $pub_notes;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getIdPreinvoice()
+    public function getIdPreinvoice(): int
     {
         return $this->id_preinvoice;
     }
 
     /**
-     * @param mixed $id_preinvoice
+     * @param int $id_preinvoice
      * @return Invoice
      */
-    public function setIdPreinvoice($id_preinvoice)
+    public function setIdPreinvoice(int $id_preinvoice): Invoice
     {
         $this->id_preinvoice = $id_preinvoice;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getTags()
+    public function getTags(): string
     {
         return $this->tags;
     }
 
     /**
-     * @param mixed $tags
+     * @param string $tags
      * @return Invoice
      */
-    public function setTags($tags)
+    public function setTags(string $tags): Invoice
     {
         $this->tags = $tags;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getReverseVat()
+    public function isReverseVat(): bool
     {
         return $this->reverse_vat;
     }
 
     /**
-     * @param mixed $reverse_vat
+     * @param bool $reverse_vat
      * @return Invoice
      */
-    public function setReverseVat($reverse_vat)
+    public function setReverseVat(bool $reverse_vat): Invoice
     {
         $this->reverse_vat = $reverse_vat;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPubNotes2()
+    public function getPubNotes2(): string
     {
         return $this->pub_notes2;
     }
 
     /**
-     * @param mixed $pub_notes2
+     * @param string $pub_notes2
      * @return Invoice
      */
-    public function setPubNotes2($pub_notes2)
+    public function setPubNotes2(string $pub_notes2): Invoice
     {
         $this->pub_notes2 = $pub_notes2;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPayment()
+    public function getPayment(): string
     {
         return $this->payment;
     }
 
     /**
-     * @param mixed $payment
+     * @param string $payment
      * @return Invoice
      */
-    public function setPayment($payment)
+    public function setPayment(string $payment): Invoice
     {
         $this->payment = $payment;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getPaymentAct()
+    public function getPaymentAct(): int
     {
         return $this->payment_act;
     }
 
     /**
-     * @param mixed $payment_act
+     * @param int $payment_act
      * @return Invoice
      */
-    public function setPaymentAct($payment_act)
+    public function setPaymentAct(int $payment_act): Invoice
     {
         $this->payment_act = $payment_act;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDateServed0()
+    public function getDateServed0(): string
     {
         return $this->date_served0;
     }
 
     /**
-     * @param mixed $date_served0
+     * @param string $date_served0
      * @return Invoice
      */
-    public function setDateServed0($date_served0)
+    public function setDateServed0(string $date_served0): Invoice
     {
         $this->date_served0 = $date_served0;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getDoctype()
+    public function getDoctype(): int
     {
         return $this->doctype;
     }
 
     /**
-     * @param mixed $doctype
+     * @param int $doctype
      * @return Invoice
      */
-    public function setDoctype($doctype)
+    public function setDoctype(int $doctype): Invoice
     {
         $this->doctype = $doctype;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getIdSetup()
+    public function getIdSetup(): int
     {
         return $this->id_setup;
     }
 
     /**
-     * @param mixed $id_setup
+     * @param int $id_setup
      * @return Invoice
      */
-    public function setIdSetup($id_setup)
+    public function setIdSetup(int $id_setup): Invoice
     {
         $this->id_setup = $id_setup;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getIdCurrency()
+    public function getIdCurrency(): int
     {
         return $this->id_currency;
     }
 
     /**
-     * @param mixed $id_currency
+     * @param int $id_currency
      * @return Invoice
      */
-    public function setIdCurrency($id_currency)
+    public function setIdCurrency(int $id_currency): Invoice
     {
         $this->id_currency = $id_currency;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getConvRate()
+    public function getConvRate(): float
     {
         return $this->conv_rate;
     }
 
     /**
-     * @param mixed $conv_rate
+     * @param float $conv_rate
      * @return Invoice
      */
-    public function setConvRate($conv_rate)
+    public function setConvRate(float $conv_rate): Invoice
     {
         $this->conv_rate = $conv_rate;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getReferenceDocument()
+    public function getReferenceDocument(): string
     {
         return $this->reference_document;
     }
 
     /**
-     * @param mixed $reference_document
+     * @param string $reference_document
      * @return Invoice
      */
-    public function setReferenceDocument($reference_document)
+    public function setReferenceDocument(string $reference_document): Invoice
     {
         $this->reference_document = $reference_document;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getReferenceDate()
+    public function getReferenceDate(): string
     {
         return $this->reference_date;
     }
 
     /**
-     * @param mixed $reference_date
+     * @param string $reference_date
      * @return Invoice
      */
-    public function setReferenceDate($reference_date)
+    public function setReferenceDate(string $reference_date): Invoice
     {
         $this->reference_date = $reference_date;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getDocnum()
+    public function getDocnum(): int
     {
         return $this->docnum;
     }
 
     /**
-     * @param mixed $docnum
+     * @param int $docnum
      * @return Invoice
      */
-    public function setDocnum($docnum)
+    public function setDocnum(int $docnum): Invoice
     {
         $this->docnum = $docnum;
         return $this;
@@ -553,94 +620,95 @@ class Invoice implements ArrayModel
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getVersion()
+    public function getVersion(): int
     {
         return $this->version;
     }
 
     /**
-     * @param mixed $version
+     * @param int $version
      * @return Invoice
      */
-    public function setVersion($version)
+    public function setVersion(int $version): Invoice
     {
         $this->version = $version;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getToFiscalize()
+    public function isToFiscalize(): bool
     {
         return $this->to_fiscalize;
     }
 
     /**
-     * @param mixed $to_fiscalize
+     * @param bool $to_fiscalize
      * @return Invoice
      */
-    public function setToFiscalize($to_fiscalize)
+    public function setToFiscalize(bool $to_fiscalize): Invoice
     {
         $this->to_fiscalize = $to_fiscalize;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getFiscalized()
+    public function isFiscalized(): bool
     {
         return $this->fiscalized;
     }
 
     /**
-     * @param mixed $fiscalized
+     * @param bool $fiscalized
      * @return Invoice
      */
-    public function setFiscalized($fiscalized)
+    public function setFiscalized(bool $fiscalized): Invoice
     {
         $this->fiscalized = $fiscalized;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getIdInvoiceSentCn()
+    public function getIdInvoiceSentCn(): int
     {
         return $this->id_invoice_sent_cn;
     }
 
     /**
-     * @param mixed $id_invoice_sent_cn
+     * @param int $id_invoice_sent_cn
      * @return Invoice
      */
-    public function setIdInvoiceSentCn($id_invoice_sent_cn)
+    public function setIdInvoiceSentCn(int $id_invoice_sent_cn): Invoice
     {
         $this->id_invoice_sent_cn = $id_invoice_sent_cn;
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getIdProject()
+    public function getIdProject(): int
     {
         return $this->id_project;
     }
 
     /**
-     * @param mixed $id_project
+     * @param int $id_project
      * @return Invoice
      */
-    public function setIdProject($id_project)
+    public function setIdProject(int $id_project): Invoice
     {
         $this->id_project = $id_project;
         return $this;
     }
+
 
 
 }

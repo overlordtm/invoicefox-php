@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use RTFM\InvoiceFoxAPI;
 use RTFM\InvoiceFoxAPI\Exception\NotFoundException;
 
-final class InvoiceFoxAPITest extends TestCase
+final class InvoiceFoxAPITestDisable extends TestCase
 {
     /**
      * @var InvoiceFoxAPI\InvoiceFoxAPI
@@ -15,8 +15,8 @@ final class InvoiceFoxAPITest extends TestCase
     protected function setUp()
     {
         $this->api = InvoiceFoxAPI\InvoiceFoxAPI::newInstance();
+        $this->cleanup();
     }
-
 
     public function testCanCreateDefaultInstance()
     {
@@ -26,6 +26,19 @@ final class InvoiceFoxAPITest extends TestCase
     public function testPartnerList()
     {
         $partners = $this->api->partnerList();
+
+        $this->assertEmpty($partners);
+
+        $partner = new InvoiceFoxAPI\Model\Partner();
+
+        $partner->setName("Partner Name");
+        $this->api->partnerCreate($partner);
+
+        $partner->setName("Partner Name2");
+        $this->api->partnerCreate($partner);
+
+        $partners = $this->api->partnerList();
+
         $this->assertNotEmpty($partners);
     }
 
@@ -34,7 +47,6 @@ final class InvoiceFoxAPITest extends TestCase
         $partner = new InvoiceFoxAPI\Model\Partner();
 
         $partner->setName("Partner Name");
-
         $partnerId = $this->api->partnerCreate($partner);
 
         $partner2 = $this->api->partnerGet($partnerId);
@@ -78,12 +90,47 @@ final class InvoiceFoxAPITest extends TestCase
 
         $this->assertInternalType("int", $transfer_id);
 
-//        $item = new InvoiceFoxAPI\Model\Item();
-//        $item->setCode("Test item");
-//        $item->setPrice(666.6);
-//        $item->setTax(0);
-//
-//        $titem = new InvoiceFoxAPI\Model\TransferItem();
+
+    }
+
+    public function testInvoiceList() {
+
+        $invoices = $this->api->invoices()->list();
+
+        $this->assertNotEmpty($invoices);
+
+    }
+
+    public function testInvoiceDelete() {
+
+        $invoices = $this->api->invoiceList();
+
+        $this->fail("Implement");
+
+    }
+
+    private function cleanup() {
+
+        foreach($this->api->invoiceList() as $item) {
+            /* @var $item InvoiceFoxAPI\Model\Item */
+//            $this->api->invoiceDelete($item->getId());
+        }
+
+        foreach($this->api->partnerList() as $item) {
+            /* @var $item InvoiceFoxAPI\Model\Item */
+            $this->api->partnerDelete($item->getId());
+        }
+
+        foreach($this->api->itemList() as $item) {
+            /* @var $item InvoiceFoxAPI\Model\Item */
+            $this->api->itemDelete($item->getId());
+        }
+
+        foreach($this->api->transferList() as $item) {
+            /* @var $item InvoiceFoxAPI\Model\Item */
+//            $this->api->transferDelete($item->getId());
+        }
+
 
     }
 
