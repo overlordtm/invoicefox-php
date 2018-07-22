@@ -11,6 +11,7 @@ namespace RTFM\InvoiceFoxAPI\API;
 use GuzzleHttp;
 use RTFM\InvoiceFoxAPI\Exception;
 use RTFM\InvoiceFoxAPI\Exception\APIException;
+use RTFM\InvoiceFoxAPI\Model\ArrayModel;
 use RTFM\InvoiceFoxAPI\Model\BaseModel;
 
 class APIResource
@@ -145,7 +146,7 @@ class APIResource
      */
     public function get(int $id)
     {
-        $resp = $this->autoRequest('get', ['id', $id]);
+        $resp = $this->autoRequest('get', ['id' => $id]);
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
     }
 
@@ -177,7 +178,7 @@ class APIResource
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function create(BaseModel $obj)
+    public function create(ArrayModel $obj)
     {
         $resp = $this->autoRequest('create', $obj->toArray());
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);
@@ -189,7 +190,7 @@ class APIResource
      * @throws APIException
      * @throws Exception\NotFoundException
      */
-    public function update(BaseModel $obj)
+    public function update(ArrayModel $obj)
     {
         $resp = $this->autoRequest('update', $obj->toArray());
         return $this->handleResponse(array($this->resourceModel, 'from'), $resp, true, false);

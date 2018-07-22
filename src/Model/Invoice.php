@@ -22,6 +22,7 @@ class Invoice extends BaseModel
     );
 
     public static $createFields = array(
+        "id",
         "payment_act",
         "id_preinvoice",
         "doctype",

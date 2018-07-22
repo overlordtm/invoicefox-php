@@ -13,156 +13,95 @@ namespace RTFM\InvoiceFoxAPI\Model;
  *
  * @package RTFM\InvoiceFoxAPI\Model
  */
-class Partner implements ArrayModel
+class Partner extends BaseModel
 {
-    /*
-     * 		{
-			"id": 7,
-			"name": "Ime Podjetja 3 d.o.o.",
-			"street": "Ulica In stevilka",
-			"postal": "1000",
-			"city": "Ljubljana",
-			"vatid": "94265771",
-			"phone": "",
-			"website": "",
-			"email": "",
-			"notes": "",
-			"vatbound": 1,
-			"custaddr": "",
-			"payment_period": 15,
-			"street2": "",
-			"country": "",
-			"parent": 0,
-			"bankacc": "",
-			"bic_bei": "",
-			"internal_id": "",
-			"reg_num": "",
-			"flags": 0
-		}
-     */
 
-    /**
-     * @var int
-     */
-    private $id = NULL;
+    public static $requiredFields = array(
+        "name",
+    );
 
-    /**
-     * @var string
-     */
-    private $name;
+    public static $createFields = array(
+        "id",
+        "name",
+        "street",
+        "city",
+        "postal",
+        "custaddr",
+        "vatbound",
+        "vatid",
+        "payment_period",
+        "bankacc",
+        "bic_bei",
+        "reg_num",
+        "internal_id",
+        "phone",
+        "email",
+        "website",
+        "notes",
+    );
 
-    /**
-     * @var string
-     */
-    private $street = "";
+    /** @var int */
+    protected $id;
 
-    /**
-     * @var string
-     */
-    private $street2 = "";
+    /** @var string */
+    protected $name;
 
-    /**
-     * @var string
-     */
-    private $postal = "";
+    /** @var string */
+    protected $street = "";
 
-    /**
-     * @var string
-     */
-    private $city = "";
+    /** @var string */
+    protected $street2 = "";
 
-    /**
-     * @var string
-     */
-    private $country = "";
+    /** @var string */
+    protected $postal = "";
 
-    /**
-     * @var string
-     */
-    private $vatid = "";
+    /** @var string */
+    protected $city = "";
 
-    /**
-     * @var string
-     */
-    private $phone = "";
+    /** @var string */
+    protected $country = "";
 
-    /**
-     * @var string
-     */
-    private $website = "";
+    /** @var string */
+    protected $vatid = "";
 
-    /**
-     * @var string
-     */
-    private $email = "";
+    /** @var string */
+    protected $phone = "";
 
-    /**
-     * @var string
-     */
-    private $notes = "";
+    /** @var string */
+    protected $website = "";
 
-    /**
-     * @var bool
-     */
-    private $vatbound = false;
+    /** @var string */
+    protected $email = "";
 
-    /**
-     * @var string
-     */
-    private $custaddr = "";
+    /** @var string */
+    protected $notes = "";
 
-    /**
-     * @var int
-     */
-    private $payment_period = 0;
+    /** @var bool */
+    protected $vatbound = false;
 
-    /**
-     * @var int
-     */
-    private $parent = 0;
+    /** @var string */
+    protected $custaddr = "";
 
-    /**
-     * @var string
-     */
-    private $bankacc = "";
+    /** @var int */
+    protected $payment_period = 0;
 
-    /**
-     * @var string
-     */
-    private $bic_bei = "";
+    /** @var int */
+    protected $parent = 0;
 
-    /**
-     * @var string
-     */
-    private $internal_id = "";
+    /** @var string */
+    protected $bankacc = "";
 
-    /**
-     * @var string
-     */
-    private $reg_num = "";
+    /** @var string */
+    protected $bic_bei = "";
 
-    /**
-     * @var int
-     */
-    private $flags = 0;
+    /** @var string */
+    protected $internal_id = "";
 
-    public static function from($data)
-    {
-        $obj = new self();
+    /** @var string */
+    protected $reg_num = "";
 
-        foreach ($data as $key => $value) {
-            if (property_exists($obj, $key)) {
-                $obj->{$key} = $value;
-            }
-        }
-
-        return $obj;
-    }
-
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
+    /** @var int */
+    protected $flags = 0;
 
     /**
      * @return int
@@ -541,6 +480,5 @@ class Partner implements ArrayModel
         $this->flags = $flags;
         return $this;
     }
-
 
 }

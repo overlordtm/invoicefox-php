@@ -55,6 +55,10 @@ abstract class CRUDTestCase extends BaseTestCase
 
         $createdModel = $this->repo->create($model);
 
+        $idGetter = $this->getterName($createdModel::$idField);
+
+        $this->assertNotNull($createdModel->$idGetter(), "Created model shoud have ID set");
+
         foreach ($model::$requiredFields as $field) {
             $getter = $this->getterName($field);
 
