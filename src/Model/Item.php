@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: az
- * Date: 10.7.2018
- * Time: 21:19
- */
+
 
 namespace RTFM\InvoiceFoxAPI\Model;
 
@@ -13,71 +8,53 @@ namespace RTFM\InvoiceFoxAPI\Model;
  * Class Item
  * @package RTFM\InvoiceFoxAPI\Model
  */
-class Item implements ArrayModel
+class Item extends BaseModel
 {
 
-    /*
-     * 		{
-			"id": 5,
-			"code": "koda22677",
-			"descr": "",
-			"price": 42.0,
-			"unit": "",
-			"tax": 22.0,
-			"ean": null,
-			"ean_code": "",
-			"lead_time": 0,
-			"min_order": 0.0,
-			"notes": "",
-			"extern_code": "",
-			"dont_inventory": 0,
-			"sales_item": 0,
-			"tags": "",
-			"max_disct": "",
-			"madein": "",
-			"weight": ""
-		},
-     *
-     */
+    public static $requiredFields = array(
+        "code",
+        "price",
+        "tax",
+    );
 
+    public static $createFields = array(
+        "id",
+        "code",
+        "descr",
+        "price",
+        "unit",
+        "tax",
+        "ean_code",
+        "dont_inventory",
+        "sales_item",
+        "tags",
+        "extern_code",
+        "lead_time",
+        "min_order",
+        "max_disct",
+        "madein",
+        "weight",
+        "notes",
+    );
 
-    private $id;
-    private $code;
-    private $descr;
-    private $price;
-    private $unit;
-    private $tax;
-    private $ean;
-    private $ean_code;
-    private $lead_time;
-    private $min_order;
-    private $notes;
-    private $extern_code;
-    private $dont_inventory;
-    private $sales_item;
-    private $tags;
-    private $max_disct;
-    private $madein;
-    private $weight;
-
-
-    public static function from($data)
-    {
-        $obj = new self();
-
-        foreach ($data as $key => $value) {
-            if (property_exists($obj, $key)) {
-                $obj->{$key} = $value;
-            }
-        }
-
-        return $obj;
-    }
-
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
+    protected $id;
+    protected $code;
+    protected $descr;
+    protected $price;
+    protected $unit;
+    protected $tax;
+    protected $ean;
+    protected $ean_code;
+    protected $lead_time;
+    protected $min_order;
+    protected $notes;
+    protected $extern_code;
+    protected $dont_inventory;
+    protected $sales_item;
+    protected $tags;
+    protected $max_disct;
+    protected $madein;
+    protected $weight;
 
     /**
      * @return mixed
@@ -89,10 +66,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $id
+     * @return Item
      */
-    public function setId($id): void
+    public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -105,10 +84,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $code
+     * @return Item
      */
-    public function setCode($code): void
+    public function setCode($code)
     {
         $this->code = $code;
+        return $this;
     }
 
     /**
@@ -121,10 +102,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $descr
+     * @return Item
      */
-    public function setDescr($descr): void
+    public function setDescr($descr)
     {
         $this->descr = $descr;
+        return $this;
     }
 
     /**
@@ -137,10 +120,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $price
+     * @return Item
      */
-    public function setPrice($price): void
+    public function setPrice($price)
     {
         $this->price = $price;
+        return $this;
     }
 
     /**
@@ -153,10 +138,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $unit
+     * @return Item
      */
-    public function setUnit($unit): void
+    public function setUnit($unit)
     {
         $this->unit = $unit;
+        return $this;
     }
 
     /**
@@ -169,10 +156,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $tax
+     * @return Item
      */
-    public function setTax($tax): void
+    public function setTax($tax)
     {
         $this->tax = $tax;
+        return $this;
     }
 
     /**
@@ -185,10 +174,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $ean
+     * @return Item
      */
-    public function setEan($ean): void
+    public function setEan($ean)
     {
         $this->ean = $ean;
+        return $this;
     }
 
     /**
@@ -201,10 +192,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $ean_code
+     * @return Item
      */
-    public function setEanCode($ean_code): void
+    public function setEanCode($ean_code)
     {
         $this->ean_code = $ean_code;
+        return $this;
     }
 
     /**
@@ -217,10 +210,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $lead_time
+     * @return Item
      */
-    public function setLeadTime($lead_time): void
+    public function setLeadTime($lead_time)
     {
         $this->lead_time = $lead_time;
+        return $this;
     }
 
     /**
@@ -233,10 +228,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $min_order
+     * @return Item
      */
-    public function setMinOrder($min_order): void
+    public function setMinOrder($min_order)
     {
         $this->min_order = $min_order;
+        return $this;
     }
 
     /**
@@ -249,10 +246,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $notes
+     * @return Item
      */
-    public function setNotes($notes): void
+    public function setNotes($notes)
     {
         $this->notes = $notes;
+        return $this;
     }
 
     /**
@@ -265,10 +264,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $extern_code
+     * @return Item
      */
-    public function setExternCode($extern_code): void
+    public function setExternCode($extern_code)
     {
         $this->extern_code = $extern_code;
+        return $this;
     }
 
     /**
@@ -281,10 +282,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $dont_inventory
+     * @return Item
      */
-    public function setDontInventory($dont_inventory): void
+    public function setDontInventory($dont_inventory)
     {
         $this->dont_inventory = $dont_inventory;
+        return $this;
     }
 
     /**
@@ -297,10 +300,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $sales_item
+     * @return Item
      */
-    public function setSalesItem($sales_item): void
+    public function setSalesItem($sales_item)
     {
         $this->sales_item = $sales_item;
+        return $this;
     }
 
     /**
@@ -313,10 +318,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $tags
+     * @return Item
      */
-    public function setTags($tags): void
+    public function setTags($tags)
     {
         $this->tags = $tags;
+        return $this;
     }
 
     /**
@@ -329,10 +336,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $max_disct
+     * @return Item
      */
-    public function setMaxDisct($max_disct): void
+    public function setMaxDisct($max_disct)
     {
         $this->max_disct = $max_disct;
+        return $this;
     }
 
     /**
@@ -345,10 +354,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $madein
+     * @return Item
      */
-    public function setMadein($madein): void
+    public function setMadein($madein)
     {
         $this->madein = $madein;
+        return $this;
     }
 
     /**
@@ -361,10 +372,12 @@ class Item implements ArrayModel
 
     /**
      * @param mixed $weight
+     * @return Item
      */
-    public function setWeight($weight): void
+    public function setWeight($weight)
     {
         $this->weight = $weight;
+        return $this;
     }
 
 
