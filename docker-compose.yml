@@ -3,29 +3,41 @@ services:
   php7.0-cli:
     build:
       context: ./
-      dockerfile: docker/Dockerfile.php7.0-cli
+      dockerfile: .circleci/images/php7.0-cli/Dockerfile
     environment:
       - INVOICEFOX_API_KEY
     env_file: .env
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: composer test
   php7.1-cli:
     build:
       context: ./
-      dockerfile: docker/Dockerfile.php7.1-cli
+      dockerfile: .circleci/images/php7.1-cli/Dockerfile
     environment:
       - INVOICEFOX_API_KEY
     env_file: .env
+    volumes:
+    - .:/app
+    working_dir: /app
+    command: composer test
   php7.2-cli:
     build:
       context: ./
-      dockerfile: docker/Dockerfile.php7.2-cli
+      dockerfile: .circleci/images/php7.2-cli/Dockerfile
     environment:
       - INVOICEFOX_API_KEY
     env_file: .env
+    volumes:
+    - .:/app
+    working_dir: /app
+    command: composer test
 
   workspace:
     build:
       context: ./
-      dockerfile: docker/Dockerfile.php7.0-cli
+      dockerfile: .circleci/images/php7.0-cli/Dockerfile
     volumes:
       - .:/app
     environment:
