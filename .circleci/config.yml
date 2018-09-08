@@ -13,7 +13,7 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "composer.json" }}
-      - run: composer install -n --prefer-dist
+      - run: rm -f ~/repo/composer.lock && composer install -n --prefer-dist
       - save_cache:
           paths:
             - ./vendor

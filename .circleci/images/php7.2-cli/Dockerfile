@@ -1,14 +1,9 @@
 FROM php:7.2-cli-alpine
 
-RUN cd /usr/local/bin && curl --silent --show-error https://getcomposer.org/installer | php
-RUN ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
-RUN adduser -D -u 1000 user
+RUN apk add openssh git tar gzip ca-certificates
 
-ADD --chown=1000:1000 . /app
+RUN curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN adduser -D -u 1000 user
 
 USER user
 WORKDIR /app
-
-RUN rm -rf /app/composer.lock /app/vendor
-
-CMD /usr/local/bin/composer.phar docker-test
