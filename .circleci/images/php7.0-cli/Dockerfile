@@ -7,7 +7,3 @@ RUN adduser -D -u 1000 user
 
 USER user
 WORKDIR /app
-
-LABEL com.circleci.preserve-entrypoint=true
-ENTRYPOINT /usr/local/bin/composer
-CMD docker-test
