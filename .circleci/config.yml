@@ -61,9 +61,9 @@ workflows:
   tests:
     jobs:
       - test-php7.0
-      - test-php7.1
+      - test-php7.1:
           requires:
-            -test-php7.0
-      - test-php7.2
+            - test-php7.0
+      - test-php7.2:
           requires:
-            -test-php7.1
+            - test-php7.1
